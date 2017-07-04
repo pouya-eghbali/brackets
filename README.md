@@ -37,10 +37,10 @@ This will convert:
 
 ```
 if(1 in {1,2,3}){
-	print(5)
-	for(x in c){
-		print(c)
-	}
+    print(5)
+    for(x in c){
+        print(c)
+    }
 }
 ```
 
@@ -48,9 +48,9 @@ To this:
 
 ```
 if(1 in {1,2,3}):
-	print(5)
-	for x in c:
-		print(c)
+    print(5)
+    for x in c:
+        print(c)
 ```
 
 It works for messy code too. see how this can work on this one-line code:
@@ -63,10 +63,10 @@ The result from the previous is:
 
 ```
 def fib(n):
-	if(n in 0):
-		return n
-	else:
-		return fib(n-1)+fib(n-2)
+    if(n in 0):
+        return n
+    else:
+        return fib(n-1)+fib(n-2)
 ```
 
 using ; is supported:
@@ -81,19 +81,19 @@ You can also write anonymous functions like this:
 print([def(x, y) {return x + y}(x, y) for x in range(0, 5) for y in range(-5, 0)])
 print([def(x) { if(x in [0, 1]) {return x}; while (x < 100) { x = x ** 2} return x}(x) for x in range(0, 10)])
 ```
-	
+    
 Not necessarily in one line:
 
 ```
 print([def(x) {
-		if(x in [0, 1]) {
-		  return x
-		};
-		while (x < 100) {
-		  x = x ** 2
-		};
-		return x
-	  }(x) for x in range(0, 10)])
+        if(x in [0, 1]) {
+          return x
+        };
+        while (x < 100) {
+          x = x ** 2
+        };
+        return x
+      }(x) for x in range(0, 10)])
 ```
 
 Note that this anonymous function isn't Python lambda, they're real functions, without limitations of lambda.
