@@ -1,2 +1,2 @@
 import brackets
-import bracketstest
+import brackets.brackets_test
