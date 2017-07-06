@@ -18,7 +18,7 @@ to use this, add the magic encoding comment to your source file:
 Then you can import it directly (obvsly brackets should be imported first), or if you added the encoding to your sites.py, you can use idle to view the decoded file.
 
 
-Currently just works for "if|elif|else|for|while|def|with" statements. It's also possible to mix indentation and brackets. You can do that, but it is not recommended.
+Currently just works for "if|elif|else|for|while|def|with|try|except|class" statements, lambda and function templates. It's also possible to mix indentation and brackets. You can do that, but it is not recommended.
 This started as a code, a hobby project in 2014, but now I started working on it again, and I rewrote it completely.
 
 You can also decode brackets literals:
@@ -27,6 +27,12 @@ You can also decode brackets literals:
 import brackets
 a = b'brackets code'
 a.decode('brackets')
+```
+
+or translate:
+
+```
+brackets.translate(code) # utf8 string
 ```
 
 To know how to code with brackets examine the examples provided here. There's no warranty. There might be parsing errors, report if there are any, feel free to make a pull request.

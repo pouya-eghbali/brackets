@@ -14,11 +14,49 @@ print([def(x){
       }(x) for x in range(0, 10)])
 
 template = def {
-	while ({0}){
-		{0} -= 1;
-		print({0});
-	}
+    while ({0}){
+        {0} -= 1;
+        print({0});
+    }
 }
 
 func = template.format(10)
 func()
+
+x = 10
+
+if (x > 10) {
+    print('x is > 10')
+} else {
+    print('x is not > 10')
+}
+
+if (True) {
+if (x > 10) {
+    print('x is > 10')
+} elif (x == 10) {
+    print('x is == 10')
+} else {
+    print('x is not > 10')
+}
+}
+
+try {1 / 0}
+except { print('exception happened') }
+
+try {1 / 0}
+except (ZeroDivisionError) {
+    print('ZeroDivisionError happened')
+}
+
+class Test(object){
+    def __init__(self) {
+        print('Just testing classes');
+    }
+}
+
+a = Test()
+
+class Test{def __init__(self){print('Just testing the other classes');}}
+
+a = Test()

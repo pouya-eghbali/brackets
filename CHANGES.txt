@@ -1,4 +1,13 @@
-v0.2.0, July 04 2017
+v0.3.0, July 06 2017
+-- Added support for class
+-- Reformatted matcher code
+-- Fixed dependency issues
+-- Added code formatting with yapf
+
+v0.2.1, July 06 2017
+-- Added support for else, elif, try, except
+
+v0.2.0, July 06 2017
 -- complete rewriting of the code
 -- Added support for function templates
 

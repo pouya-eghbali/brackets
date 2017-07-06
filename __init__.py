@@ -2,22 +2,31 @@ import codecs, encodings
 from encodings import utf_8
 import regex as re
 from random import randrange
+from yapf.yapflib.yapf_api import FormatCode
 
-__version__ = '0.2.0'
+__version__ = '0.3.0'
 __author__  = 'Pooya Eghbali [persian.writer at gmail]'
 
 def translate(a):
 
-    create_matcher    = lambda keyword: re.compile(keyword + r'\s*(?<paren>\((?:[^()]++|(?&paren))*\))\s*(?<bracket>{(?:[^{}]++|(?&bracket))*})', flags=re.VERBOSE)
-    while_matcher     = create_matcher('while')
-    for_matcher       = create_matcher('for')
-    if_matcher        = create_matcher('if')
-    def_matcher       = create_matcher('def\s*(?<name>[^(]+?)')
-    lambda_matcher    = create_matcher('def\s*')
-    template_matcher  = re.compile(r'def\s*(?<bracket>{(?:[^{}]++|(?&bracket))*})', flags=re.VERBOSE)
-    with_matcher      = create_matcher('with')
-    string_matcher    = lambda x: re.search('""".*?"""'+"|'''.*?'''"+'|".*?"'+"|'.*?'",x,re.DOTALL)
-    bracket_matcher   = re.compile(r'(?<bracket>{(?:[^{}]++|(?&bracket))*})', flags=re.VERBOSE)
+    create_matcher       = lambda keyword: re.compile(keyword + r'\s*(?<paren>\((?:[^()]++|(?&paren))*\))\s*(?<bracket>{(?:[^{}]++|(?&bracket))*})', flags=re.VERBOSE)
+    create_np_matcher    = lambda keyword: re.compile(keyword + r'\s*(?<bracket>{(?:[^{}]++|(?&bracket))*})', flags=re.VERBOSE)
+    while_matcher        = create_matcher('while')
+    for_matcher          = create_matcher('for')
+    if_matcher           = create_matcher('if')
+    elif_matcher         = create_matcher('elif')
+    try_matcher          = create_np_matcher('try')
+    except_matcher       = create_matcher('except')
+    except_np_matcher    = create_np_matcher('except')
+    def_matcher          = create_matcher('def\s*(?<name>[^(]+?)')
+    lambda_matcher       = create_matcher('def')
+    template_matcher     = create_np_matcher('def')
+    class_matcher        = create_matcher('class\s*(?<name>[^(]+?)')
+    class_np_matcher     = create_np_matcher('class\s*(?<name>[^(]+?)')
+    else_matcher         = create_np_matcher('else')
+    with_matcher         = create_matcher('with')
+    string_matcher       = lambda x: re.search('""".*?"""'+"|'''.*?'''"+'|".*?"'+"|'.*?'",x,re.DOTALL)
+    bracket_matcher      = re.compile(r'(?<bracket>{(?:[^{}]++|(?&bracket))*})', flags=re.VERBOSE)
 
     #Grab all the string literals:
 
@@ -71,6 +80,15 @@ def translate(a):
         a = a[:start] + code + a[end:]
         match = while_matcher.search(a)
 
+    # find and pew pew elifs:
+
+    match = elif_matcher.search(a)
+    while match:
+        start, end = match.span()
+        code = 'elif ' + match.group('paren')[1:-1] + ':' + match.group('bracket')[1:-1]
+        a = a[:start] + code + a[end:]
+        match = elif_matcher.search(a)
+
     # find and pew pew ifs:
 
     match = if_matcher.search(a)
@@ -79,6 +97,15 @@ def translate(a):
         code = 'if ' + match.group('paren')[1:-1] + ':' + match.group('bracket')[1:-1]
         a = a[:start] + code + a[end:]
         match = if_matcher.search(a)
+
+    # find and pew pew elses:
+
+    match = else_matcher.search(a)
+    while match:
+        start, end = match.span()
+        code = 'else:' + match.group('bracket')[1:-1]
+        a = a[:start] + code + a[end:]
+        match = else_matcher.search(a)
 
     # find and pew pew fors:
 
@@ -97,6 +124,47 @@ def translate(a):
         code = 'with ' + match.group('paren')[1:-1] + ':' + match.group('bracket')[1:-1]
         a = a[:start] + code + a[end:]
         match = with_matcher.search(a)
+
+    # find and pew pew trys:
+
+    match = try_matcher.search(a)
+    while match:
+        start, end = match.span()
+        code = 'try:' + match.group('bracket')[1:-1]
+        a = a[:start] + code + a[end:]
+        match = try_matcher.search(a)
+
+    # find and pew pew excepts:
+
+    match = except_matcher.search(a)
+    while match:
+        start, end = match.span()
+        code = 'except ' + match.group('paren')[1:-1] + ':' + match.group('bracket')[1:-1]
+        a = a[:start] + code + a[end:]
+        match = except_matcher.search(a)
+
+    match = except_np_matcher.search(a)
+    while match:
+        start, end = match.span()
+        code = 'except:' + match.group('bracket')[1:-1]
+        a = a[:start] + code + a[end:]
+        match = except_np_matcher.search(a)
+
+    # find and pew pew classes:
+
+    match = class_matcher.search(a)
+    while match:
+        start, end = match.span()
+        code = 'class ' + match.group('name') + match.group('paren') + ':' + match.group('bracket')[1:-1]
+        a = a[:start] + code + a[end:]
+        match = class_matcher.search(a)
+
+    match = class_np_matcher.search(a)
+    while match:
+        start, end = match.span()
+        code = 'class ' + match.group('name') + ':' + match.group('bracket')[1:-1]
+        a = a[:start] + code + a[end:]
+        match = class_np_matcher.search(a)
 
     # find and pew pew defs:
 
@@ -158,6 +226,14 @@ def translate(a):
 
     a = re.sub('\n}', '}', a)
     a = re.sub('\n{\n', '{', a)
+
+    # replace encoding thingy?
+
+    a = re.sub('#\s*coding:\s*brackets', '', a)
+
+    # reformat code?
+
+    a = FormatCode(a)[0]
     
     return a
 
@@ -179,3 +255,7 @@ def search_function(s):
 
 codecs.register(search_function)
 
+if __name__ == '__main__':
+    with open('brackets_test.py', 'rb') as f:
+        
+        print(f.read().decode('brackets'))
