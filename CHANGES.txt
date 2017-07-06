@@ -1,0 +1,12 @@
+v0.2.0, July 04 2017
+-- complete rewriting of the code
+-- Added support for function templates
+
+v0.1.2-v0.1.8, July 04 2017
+-- Trying to get stupid structured text fuck to work
+
+v0.1.1, July 04 2017
+-- Added support for anonymous functions
+
+v0.1, August 11 2013
+-- Initial release

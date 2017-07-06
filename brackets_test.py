@@ -12,3 +12,13 @@ print([def(x){
         };
         return x
       }(x) for x in range(0, 10)])
+
+template = def {
+	while ({0}){
+		{0} -= 1;
+		print({0});
+	}
+}
+
+func = template.format(10)
+func()

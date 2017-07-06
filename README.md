@@ -19,7 +19,7 @@ Then you can import it directly (obvsly brackets should be imported first), or i
 
 
 Currently just works for "if|elif|else|for|while|def|with" statements. It's also possible to mix indentation and brackets. You can do that, but it is not recommended.
-This started as a code, a hobby project in 2014, but now I started working on it again.
+This started as a code, a hobby project in 2014, but now I started working on it again, and I rewrote it completely.
 
 You can also decode brackets literals:
 
@@ -97,6 +97,20 @@ print([def(x) {
 ```
 
 Note that this anonymous function isn't Python lambda, they're real functions, without limitations of lambda.
+
+There's support for function templates, they can be formatted the same way as strings are formatted, you cannot insert new code unless you're formatting them with a function:
+
+```
+template = def {
+    while ({0}){
+        {0} -= 1;
+        print({0});
+    }
+}
+
+func = template.format(10)
+func()
+```
 
 ## Project Info
 

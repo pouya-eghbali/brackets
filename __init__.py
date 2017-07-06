@@ -1,6 +1,6 @@
 import codecs, encodings
 from encodings import utf_8
-import re
+import regex as re
 from random import randrange
 
 __version__ = '0.2.0'
@@ -8,18 +8,16 @@ __author__  = 'Pooya Eghbali [persian.writer at gmail]'
 
 def translate(a):
 
-    #;
-
-    semicolons = [i.start() for i in re.finditer(';',a) if not
-                  i in re.finditer('".*;.*"',a)]
-    a = list(a)
-    for semicolon in semicolons:
-        indent = 0
-        for i in (''.join(a)[:semicolon]).split('\n')[-1]:
-            if i == ' ': indent+=1;continue
-            break
-        a[semicolon] = '\n'+' '*indent
-    a = ''.join(a)
+    create_matcher    = lambda keyword: re.compile(keyword + r'\s*(?<paren>\((?:[^()]++|(?&paren))*\))\s*(?<bracket>{(?:[^{}]++|(?&bracket))*})', flags=re.VERBOSE)
+    while_matcher     = create_matcher('while')
+    for_matcher       = create_matcher('for')
+    if_matcher        = create_matcher('if')
+    def_matcher       = create_matcher('def\s*(?<name>[^(]+?)')
+    lambda_matcher    = create_matcher('def\s*')
+    template_matcher  = re.compile(r'def\s*(?<bracket>{(?:[^{}]++|(?&bracket))*})', flags=re.VERBOSE)
+    with_matcher      = create_matcher('with')
+    string_matcher    = lambda x: re.search('""".*?"""'+"|'''.*?'''"+'|".*?"'+"|'.*?'",x,re.DOTALL)
+    bracket_matcher   = re.compile(r'(?<bracket>{(?:[^{}]++|(?&bracket))*})', flags=re.VERBOSE)
 
     #Grab all the string literals:
 
@@ -31,256 +29,136 @@ def translate(a):
 
     replaced_strings = {}
 
-    while (  re.search('""".*?"""',a,re.DOTALL)
-          or re.search("'''.*?'''",a,re.DOTALL)
-          or re.search('".*?"',a,re.DOTALL)
-          or re.search("'.*?'",a,re.DOTALL)):
-        string =  (  re.search('""".*?"""',a,re.DOTALL)
-                  or re.search("'''.*?'''",a,re.DOTALL)
-                  or re.search('".*?"',a,re.DOTALL)
-                  or re.search("'.*?'",a,re.DOTALL)).span()
+    while (string_matcher(a)):
+        string =  (string_matcher(a)).span()
+        
         unique_replacer = '%030x' % randrange(16**50)
         while unique_replacer in replaced_strings:
             unique_replacer = '%030x' % randrange(16**50)
+        
         replaced_strings[unique_replacer] = a[string[0]:string[1]]
-        a = a.replace(a[string[0]:string[1]],'-*'+unique_replacer+'*-')
+        a = a[:string[0]] + '-*'+unique_replacer+'*-\n' + a[string[1]:]
 
-    #endof function
+    # ; means line-break, sooooo:
 
-    #endof = lambda s,i=0,c=1:(c==0 and i-1
-    #               or s[i] == '}'  and endof(s,i+1,c-1)
-    #               or s[i] == '{'  and endof(s,i+1,c+1)
-    #               or endof(s,i+1,c))                      #THIS DOES NOT WORK! RECURSION LIMIT.
+    a = re.sub(';\s*', '\n', a)
 
-    def endof(s,i,p=False):
-        c = 1
-        for j, char in enumerate(s[i:]):
-            if char == ('}' if not p else ')'): c-=1
-            elif char == ('{' if not p else '('): c+=1
-            if c == 0: return i+j
+    # every } is a }; sooooo:
 
-    def startof(i):
-        e = endof(a,i=i.end()+1,p=True)
-        return a[e:].find('{')+e+1
+    a = re.sub('}\s*', '\n}\n', a)
 
-    #{} Preprocess
+    # and each { is beginning of a line:
 
-    pattern = '}\W*(if|elif|else|for|while|def|with)\W'
-    for j, i in enumerate(sorted(([i.start() for i in re.finditer(pattern,a)]))):
-        a = a[:i+j]+'\n'+a[i+j:]
+    a = re.sub('{\s*', '\n{\n', a)
 
-    a = a.replace('}','\n}')
+    # oki now indent EVERYTHING:
 
-    #if
+    match = bracket_matcher.search(a)
+    while match:
+        start, end = match.span()
+        a = a[:start] + '\1' + '\n    '.join((a[start+1:end-1]).split('\n')) + '\2' + a[end:]
+        match = bracket_matcher.search(a)
 
-    ifs = [(startof(i)-1, endof(a,i=startof(i))) for i in re.finditer(r'(\s*|{|})if\s*?\(',a)]
-    for i,_if in enumerate(sorted(ifs,key=lambda x:x[0])):
-        a=(a[:_if[0]+i*2]+':\3\n'+a[_if[0]+i*2+1:_if[1]+i*2]+'\n'+a[_if[1]+i*2+1:])
+    a = a.replace('\1', '{')
+    a = a.replace('    \2', '}')
 
-    lines = [(len((a[:_if[0]+i*2]).split('\n')),len((a[:_if[1]+1+i*2]).split('\n')))
-             for i,_if in enumerate(sorted(ifs,key=lambda x:x[0]))]
+    # find and pew pew whiles:
 
-    a = a.split('\n')
-    for line in sorted(lines, key = lambda x:x[0]):
-        line = (line[0]-1,line[1])
-        for i in range(0, len(a)):
-            if i in range(*line):
-                a[i] = a[i].strip()
-    for line in sorted(lines, key = lambda x:x[0]):
-        for i in range(0, len(a)):
-            if i in range(*line):
-                a[i] = '    '+a[i]+'\1'
-    a = ('\n'.join(a)).rstrip()
+    match = while_matcher.search(a)
+    while match:
+        start, end = match.span()
+        code = 'while ' + match.group('paren')[1:-1] + ':' + match.group('bracket')[1:-1]
+        a = a[:start] + code + a[end:]
+        match = while_matcher.search(a)
 
-    #elif
+    # find and pew pew ifs:
 
-    elifs = [(startof(i)-1, endof(a,i=startof(i))) for i in re.finditer(r'(\s*|{|})elif\s*?\(',a)]
+    match = if_matcher.search(a)
+    while match:
+        start, end = match.span()
+        code = 'if ' + match.group('paren')[1:-1] + ':' + match.group('bracket')[1:-1]
+        a = a[:start] + code + a[end:]
+        match = if_matcher.search(a)
 
-    for i,_elif in enumerate(sorted(elifs,key=lambda x:x[0])):
-        a=(a[:_elif[0]+i*2]+':\3\n'+a[_elif[0]+i*2+1:_elif[1]+i*2]+'\n'+a[_elif[1]+i*2+1:])
+    # find and pew pew fors:
 
-    lines = [(len((a[:_elif[0]+i*2]).split('\n')),len((a[:_elif[1]+1+i*2]).split('\n')))
-             for i,_elif in enumerate(sorted(elifs,key=lambda x:x[0]))]
+    match = for_matcher.search(a)
+    while match:
+        start, end = match.span()
+        code = 'for ' + match.group('paren')[1:-1] + ':' + match.group('bracket')[1:-1]
+        a = a[:start] + code + a[end:]
+        match = for_matcher.search(a)
 
-    a = a.split('\n')
-    for line in sorted(lines, key = lambda x:x[0]):
-        line = (line[0]-1,line[1])
-        for i in range(0, len(a)):
-            if i in range(*line):
-                a[i] = '\1' in a[i] and a[i] or a[i].strip()
-    for line in sorted(lines, key = lambda x:x[0]):
-        for i in range(0, len(a)):
-            if i in range(*line):
-                a[i] = '    '+a[i]+'\1'
-    a = ('\n'.join(a)).rstrip()
+    # find and pew pew withs:
 
-    #else
+    match = with_matcher.search(a)
+    while match:
+        start, end = match.span()
+        code = 'with ' + match.group('paren')[1:-1] + ':' + match.group('bracket')[1:-1]
+        a = a[:start] + code + a[end:]
+        match = with_matcher.search(a)
 
-    elses = [(i.end()-1,endof(a,i=i.end())) for i in re.finditer(r'(\s*|{|})else\s*?{',a)]
+    # find and pew pew defs:
 
-    for i,_else in enumerate(sorted(elses,key=lambda x:x[0])):
-        a=(a[:_else[0]+i*2]+':\3\n'+a[_else[0]+i*2+1:_else[1]+i*2]+'\n'+a[_else[1]+i*2+1:])
+    match = def_matcher.search(a)
+    while match:
+        start, end = match.span()
+        code = 'def ' + match.group('name') + match.group('paren') + ':' + match.group('bracket')[1:-1]
+        a = a[:start] + code + a[end:]
+        match = def_matcher.search(a)
 
-    lines = [(len((a[:_else[0]+i*2]).split('\n')),len((a[:_else[1]+1+i*2]).split('\n')))
-             for i,_else in enumerate(sorted(elses,key=lambda x:x[0]))]
+    # find and pew pew templates:
 
-    a = a.split('\n')
-    for line in sorted(lines, key = lambda x:x[0]):
-        line = (line[0]-1,line[1])
-        for i in range(0, len(a)):
-            if i in range(*line):
-                a[i] = '\1' in a[i] and a[i] or a[i].strip()
-    for line in sorted(lines, key = lambda x:x[0]):
-        for i in range(0, len(a)):
-            if i in range(*line):
-                a[i] = '    '+a[i]+'\1'
-    a = ('\n'.join(a)).rstrip()
+    match = template_matcher.search(a)
+    tplrntm = bool(match)
+    while match:
+        start, end = match.span()
+        name = 'template_%030x' % randrange(16**50)
+        code =  match.group('bracket')
+        variables = set(v.strip() for v in re.findall(r'{\s*([^,}]+?)\s*}', code[1:-1], re.MULTILINE))
+        args = '({0})'.format(', '.join('__{0}__'.format(v) for v in variables))
+        code = '{' + re.sub(r'\n +{\s*([^,}]+?)\s*}\n\s+', r'__\1__', code[1:-1]) + '}'
+        code = 'def ' + args + code
+        code = '{0} = BracketsTemplateCreator({1})'.format(name, code)
+        a = code + '\n' + a[:start] + name + a[end:]
+        match = template_matcher.search(a)
 
-    #while
+    if tplrntm:
+        a = 'from brackets.runtime import BracketsTemplateCreator, BracketsTemplate\n' + a
 
-    whiles = [(startof(i)-1, endof(a,i=startof(i))) for i in re.finditer(r'(\s*|{|})while\s*?\(',a)]
+    # find and pew pew lambdas:
 
-    for i,_while in enumerate(sorted(whiles,key=lambda x:x[0])):
-        a=(a[:_while[0]+i*2]+':\3\n'+a[_while[0]+i*2+1:_while[1]+i*2]+'\n'+a[_while[1]+i*2+1:])
+    match = lambda_matcher.search(a)
+    while match:
+        start, end = match.span()
+        name = 'lambda_%030x' % randrange(16**50)
+        code = 'def ' + name + match.group('paren') + ':' + match.group('bracket')[1:-1]
+        a = code + a[:start] + name + a[end:]
+        match = lambda_matcher.search(a)
 
-    lines = [(len((a[:_while[0]+i*2]).split('\n')),len((a[:_while[1]+1+i*2]).split('\n')))
-             for i,_while in enumerate(sorted(whiles,key=lambda x:x[0]))]
-
-    a = a.split('\n')
-    for line in sorted(lines, key = lambda x:x[0]):
-        line = (line[0]-1,line[1])
-        for i in range(0, len(a)):
-            if i in range(*line):
-                a[i] = '\1' in a[i] and a[i] or a[i].strip()
-    for line in sorted(lines, key = lambda x:x[0]):
-        for i in range(0, len(a)):
-            if i in range(*line):
-                a[i] = '    '+a[i]+'\1'
-    a = ('\n'.join(a)).rstrip()
-
-    #For
-
-    fors = [(startof(i)-1, endof(a,i=startof(i))) for i in re.finditer(r'(\s*|{|})for\s*?\(',a)]
-
-    pairs = [(i.end()-1,endof(a,i.end(),p=True)) for i in re.finditer(r'(\s*|{|})for\s*?\(',a)]
-    a = list(a)
-    for pair in pairs:a[pair[0]]=' ';a[pair[1]]='\5'
-    a = ''.join(a)
-
-    for i,_for in enumerate(sorted(fors,key=lambda x:x[0])):
-        a=(a[:_for[0]+i*2]+':\3\n'+a[_for[0]+i*2+1:_for[1]+i*2]+'\n'+a[_for[1]+i*2+1:])
-
-    lines = [(len((a[:_for[0]+i*2]).split('\n')),len((a[:_for[1]+1+i*2]).split('\n')))
-             for i,_for in enumerate(sorted(fors,key=lambda x:x[0]))]
-    a = a.split('\n')
-    for line in sorted(lines, key = lambda x:x[0]):
-        line = (line[0]-1,line[1])
-        for i in range(0, len(a)):
-            if i in range(*line):
-                a[i] = '\1' in a[i] and a[i] or a[i].strip()
-    for line in sorted(lines, key = lambda x:x[0]):
-        for i in range(0, len(a)):
-            if i in range(*line):
-                a[i] = '    '+a[i]+'\1'
-    a = ('\n'.join(a)).rstrip()
-    a = a.replace('\5','')
-
-    #anonymous def
-
-    _def   = re.search(r'([^\x01](\s*|{|}))def\s*\(',a)
-
-    while _def:
-        start, end   = _def.start()+len(_def.group(1)), endof(a,i=startof(_def)) + 1
-        identifier   = '%030x' % randrange(16**50)
-        name         = 'lambda_' + identifier
-        code         = a[start:end].replace('def', 'def '+name, 1)
-        a            = list(a)
-        a[start:end] = list(name)
-        a            = ''.join(a)
-        a            = code + '\n\n' + a
-        _def         = re.search(r'([^\x01](\s*|{|}))def\s*\(',a)
-
-    #def
-
-    defs = [(startof(i)-1, endof(a,i=startof(i))) for i in re.finditer(r'(?<!\x01)(\s*|{|})def\s*.*?\(',a)]
-
-    for i,_def in enumerate(sorted(defs,key=lambda x:x[0])):
-        a=(a[:_def[0]+i*2]+':\3\n'+a[_def[0]+i*2+1:_def[1]+i*2]+'\n'+a[_def[1]+i*2+1:])
-
-    lines = [(len((a[:_def[0]+i*2]).split('\n')),len((a[:_def[1]+1+i*2]).split('\n')))
-             for i,_def in enumerate(sorted(defs,key=lambda x:x[0]))]
-    a = a.split('\n')
-    for line in sorted(lines, key = lambda x:x[0]):
-        line = (line[0]-1,line[1])
-        for i in range(0, len(a)):
-            if i in range(*line):
-                a[i] = '\1' in a[i] and a[i] or a[i].strip()
-    for line in sorted(lines, key = lambda x:x[0]):
-        for i in range(0, len(a)):
-            if i in range(*line):
-                a[i] = '    '+a[i]+'\1'
-    a = ('\n'.join(a)).rstrip()
-
-    #with
-
-    withs = [(startof(i)-1, endof(a,i=startof(i))) for i in re.finditer(r'(\s*|{|})with\s*?\(',a)]
-
-    pairs = [(i.end()-1,endof(a,i.end(),p=True)) for i in re.finditer(r'(\s*|{|})with\s*?\(',a)]
-    a = list(a)
-    for pair in pairs:a[pair[0]]=' ';a[pair[1]]='\5'
-    a = ''.join(a)
-
-    for i,_with in enumerate(sorted(withs,key=lambda x:x[0])):
-        a=(a[:_with[0]+i*2]+':\3\n'+a[_with[0]+i*2+1:_with[1]+i*2]+'\n'+a[_with[1]+i*2+1:])
-
-    lines = [(len((a[:_with[0]+i*2]).split('\n')),len((a[:_with[1]+1+i*2]).split('\n')))
-             for i,_with in enumerate(sorted(withs,key=lambda x:x[0]))]
-    a = a.split('\n')
-    for line in sorted(lines, key = lambda x:x[0]):
-        line = (line[0]-1,line[1])
-        for i in range(0, len(a)):
-            if i in range(*line):
-                a[i] = '\1' in a[i] and a[i] or a[i].strip()
-    for line in sorted(lines, key = lambda x:x[0]):
-        for i in range(0, len(a)):
-            if i in range(*line):
-                a[i] = '    '+a[i]+'\1'
-    a = ('\n'.join(a)).rstrip()
-    a = a.replace('\5','')
-
-    #Fix \1 mark
-
-    a = a.split('\n')
-    for i in range(0, len(a)):
-        if '\3' in a[i]:
-            indents = len(a[i])-len(a[i].lstrip())
-            a[i] = a[i].lstrip().replace('\3','')
-            a[i] = ' '*(max([a[i+1].count('\1')-1, a[i].count('\1')])*4)+a[i]+'\1'*(a[i+1].count('\1')-1)
-            a[i+1] = a[i+1].lstrip()
-            a[i+1] = ' '*(a[i+1].count('\1'))*4+a[i+1]
-
-    for i in range(0, len(a)):
-        while '\1' in a[i]:
-            a[i] = a[i].replace('\1','')
-
-    #Fix empty lines:
-
-    a = '\n'.join([l for l in a if l and not l.isspace()]).rstrip()
-
-    #Fix }:
-
-    while re.search('\s+}',a):
-        result = re.search('\s+}',a)
-        a = a.replace(a[result.start():result.end()],'}')
-
-    #replace replaced strings
+    # put back the strings?
 
     for string in replaced_strings:
         a = a.replace('-*'+string+'*-', replaced_strings[string])
 
+    # fix escapes?
+
     a = (a.replace(unique_slash_replacer,"\\'")
           .replace(unique_double_slash_replacer,'\\"'))
 
+    # fix empty lines with indent?
+
+    a = re.sub(' +\n', '\n', a)
+
+    # fix double empty lines?
+
+    a = re.sub('\n\n\n', '\n', a)
+
+    # fix dictionaries?
+
+    a = re.sub('\n}', '}', a)
+    a = re.sub('\n{\n', '{', a)
+    
     return a
 
 def search_function(s):
@@ -300,3 +178,4 @@ def search_function(s):
         streamwriter=utf8.streamwriter)
 
 codecs.register(search_function)
+
