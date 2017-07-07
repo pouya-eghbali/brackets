@@ -81,6 +81,13 @@ using ; is supported:
 import io; def fib(n){/* code */} ; print("hello");
 ```
 
+js-style comments are supported:
+```
+/* this is a
+   multiline
+   comment   */
+```
+
 You can also write anonymous functions like this:
 
 ```

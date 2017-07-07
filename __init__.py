@@ -4,7 +4,7 @@ import regex as re
 from random import randrange
 from yapf.yapflib.yapf_api import FormatCode
 
-__version__ = '0.3.0'
+__version__ = '0.3.1'
 __author__  = 'Pooya Eghbali [persian.writer at gmail]'
 
 def translate(a):
@@ -26,6 +26,7 @@ def translate(a):
     else_matcher         = create_np_matcher('else')
     with_matcher         = create_matcher('with')
     string_matcher       = lambda x: re.search('""".*?"""'+"|'''.*?'''"+'|".*?"'+"|'.*?'",x,re.DOTALL)
+    comment_matcher      = lambda x: re.search(r"//.*?\n|/\*.*?(\*/)",x,re.DOTALL)
     bracket_matcher      = re.compile(r'(?<bracket>{(?:[^{}]++|(?&bracket))*})', flags=re.VERBOSE)
 
     #Grab all the string literals:
@@ -40,13 +41,19 @@ def translate(a):
 
     while (string_matcher(a)):
         string =  (string_matcher(a)).span()
-        
+
         unique_replacer = '%030x' % randrange(16**50)
         while unique_replacer in replaced_strings:
             unique_replacer = '%030x' % randrange(16**50)
-        
+
         replaced_strings[unique_replacer] = a[string[0]:string[1]]
         a = a[:string[0]] + '-*'+unique_replacer+'*-\n' + a[string[1]:]
+
+    # well, i'll just remove the comments:
+
+    while (comment_matcher(a)):
+        start, end =  (comment_matcher(a)).span()
+        a = a[:start] + a[end:]
 
     # ; means line-break, sooooo:
 
@@ -234,7 +241,7 @@ def translate(a):
     # reformat code?
 
     a = FormatCode(a)[0]
-    
+
     return a
 
 def search_function(s):
@@ -257,5 +264,5 @@ codecs.register(search_function)
 
 if __name__ == '__main__':
     with open('brackets_test.py', 'rb') as f:
-        
+
         print(f.read().decode('brackets'))
