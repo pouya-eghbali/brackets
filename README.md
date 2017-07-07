@@ -1,7 +1,7 @@
 
 # Brackets
 
-Use c-style brackets instead of indentation. This is an encoding, you can also import this module in sites.py, it will register the encoding on import.
+Use js-style brackets instead of indentation. This is an encoding, you can also import this module in sites.py, it will register the encoding on import.
 
 To install:
 
@@ -18,7 +18,7 @@ to use this, add the magic encoding comment to your source file:
 Then you can import it directly (obvsly brackets should be imported first), or if you added the encoding to your sites.py, you can use idle to view the decoded file.
 
 
-Currently just works for "if|elif|else|for|while|def|with|try|except|class" statements, lambda and function templates. It's also possible to mix indentation and brackets. You can do that, but it is not recommended.
+Currently just works for "if|elif|else|for|while|def|with|try|except|class" statements, lambda, function templates, js-style template literals. It's also possible to mix indentation and brackets. You can do that, but it is not recommended.
 This started as a code, a hobby project in 2014, but now I started working on it again, and I rewrote it completely.
 
 You can also decode brackets literals:
@@ -94,7 +94,7 @@ You can also write anonymous functions like this:
 print([def(x, y) {return x + y}(x, y) for x in range(0, 5) for y in range(-5, 0)])
 print([def(x) { if(x in [0, 1]) {return x}; while (x < 100) { x = x ** 2} return x}(x) for x in range(0, 10)])
 ```
-    
+
 Not necessarily in one line:
 
 ```
@@ -123,6 +123,12 @@ template = def {
 
 func = template.format(10)
 func()
+```
+Js-style template literals are also available:
+
+```
+x, y = 2, 10
+print(`x is {x} and y is {x}, soooo x * y is {x * y}`)
 ```
 
 ## Project Info

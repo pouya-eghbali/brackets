@@ -1,3 +1,6 @@
+import sys
+import regex as re
+
 class BracketsTemplateCreator(object):
     """
     def {
@@ -23,3 +26,13 @@ class BracketsTemplate(object):
     def __call__(self):
         return self.callable(**self.format)
 
+def FormatStringLiteral(string, globals, locals):
+    matcher = re.compile('\{.*?\}')
+    match   = matcher.search(string)
+    while match:
+        start, end = match.span()
+        code = string[start:end]
+        val  = eval(code[1:-1], globals, locals)
+        string = string[:start] + str(val) + string[end:]
+        match   = matcher.search(string)
+    return string

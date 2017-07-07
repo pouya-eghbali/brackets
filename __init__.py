@@ -4,7 +4,7 @@ import regex as re
 from random import randrange
 from yapf.yapflib.yapf_api import FormatCode
 
-__version__ = '0.3.1'
+__version__ = '0.3.2'
 __author__  = 'Pooya Eghbali [persian.writer at gmail]'
 
 def translate(a):
@@ -28,19 +28,34 @@ def translate(a):
     string_matcher       = lambda x: re.search('""".*?"""'+"|'''.*?'''"+'|".*?"'+"|'.*?'",x,re.DOTALL)
     comment_matcher      = lambda x: re.search(r"//.*?\n|/\*.*?(\*/)",x,re.DOTALL)
     bracket_matcher      = re.compile(r'(?<bracket>{(?:[^{}]++|(?&bracket))*})', flags=re.VERBOSE)
+    literal_matcher      = lambda x: re.search(r"`.*?`",x,re.DOTALL)
 
-    #Grab all the string literals:
+    # replace all escapes oh well:
 
     unique_slash_replacer          = '%030x' % randrange(16**50)
     unique_double_slash_replacer   = '%030x' % randrange(16**50)
+    unique_grave_slash_replacer    = '%030x' % randrange(16**50)
 
     a = (a.replace("\\'", unique_slash_replacer)
-          .replace('\\"', unique_double_slash_replacer))
+          .replace('\\"', unique_double_slash_replacer)
+          .replace('\\`', unique_grave_slash_replacer))
+
+    # pew pew template literals
+
+    fstrlitrtm = False
+
+    while (literal_matcher(a)):
+        fstrlitrtm = True
+        start, end = literal_matcher(a).span()
+        literal = a[start:end]
+        a = a[:start] + 'FormatStringLiteral("{0}", globals(), locals())'.format(literal[1:-1]) + a[end:]
+
+    # pew pew all the strings
 
     replaced_strings = {}
 
     while (string_matcher(a)):
-        string =  (string_matcher(a)).span()
+        string =  string_matcher(a).span()
 
         unique_replacer = '%030x' % randrange(16**50)
         while unique_replacer in replaced_strings:
@@ -198,9 +213,6 @@ def translate(a):
         a = code + '\n' + a[:start] + name + a[end:]
         match = template_matcher.search(a)
 
-    if tplrntm:
-        a = 'from brackets.runtime import BracketsTemplateCreator, BracketsTemplate\n' + a
-
     # find and pew pew lambdas:
 
     match = lambda_matcher.search(a)
@@ -211,6 +223,10 @@ def translate(a):
         a = code + a[:start] + name + a[end:]
         match = lambda_matcher.search(a)
 
+    # replace encoding thingy?
+
+    a = re.sub('#\s*coding:\s*brackets', '', a)
+
     # put back the strings?
 
     for string in replaced_strings:
@@ -219,6 +235,7 @@ def translate(a):
     # fix escapes?
 
     a = (a.replace(unique_slash_replacer,"\\'")
+          .replace(unique_grave_slash_replacer,'`')
           .replace(unique_double_slash_replacer,'\\"'))
 
     # fix empty lines with indent?
@@ -234,9 +251,12 @@ def translate(a):
     a = re.sub('\n}', '}', a)
     a = re.sub('\n{\n', '{', a)
 
-    # replace encoding thingy?
+    # import runtime thingies?
 
-    a = re.sub('#\s*coding:\s*brackets', '', a)
+    if tplrntm:
+        a = 'from brackets.runtime import BracketsTemplateCreator, BracketsTemplate\n' + a
+    if fstrlitrtm:
+        a = 'from brackets.runtime import FormatStringLiteral\n' + a
 
     # reformat code?
 

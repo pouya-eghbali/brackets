@@ -1,3 +1,7 @@
+v0.3.2, July 07 2017
+-- Added support for js-style template literals
+-- Fixed PyPI license text
+
 v0.3.1, July 07 2017
 -- Added support for // and /* comments */
 
