@@ -4,7 +4,7 @@ import regex as re
 from random import randrange
 from yapf.yapflib.yapf_api import FormatCode
 
-__version__ = '0.3.2'
+__version__ = '0.3.3'
 __author__  = 'Pooya Eghbali [persian.writer at gmail]'
 
 def translate(a):
@@ -205,7 +205,19 @@ def translate(a):
         start, end = match.span()
         name = 'template_%030x' % randrange(16**50)
         code =  match.group('bracket')
-        variables = set(v.strip() for v in re.findall(r'{\s*([^,}]+?)\s*}', code[1:-1], re.MULTILINE))
+        variables = set(v.strip() for v in re.findall(r'{\s*([^{},]+?)\s*}', code[1:-1], re.MULTILINE))
+        literals = re.finditer('FormatStringLiteral\(-\*(?<strname>.*?)\*-\s*,\s*globals\(\),\s*locals\(\)\)', code, re.MULTILINE)
+        pattern = r'(\{(?>[^,{}]+|(?1))*\})'
+        for literal in literals:
+            string = replaced_strings[literal.group('strname')]
+            outers = list(re.finditer(pattern, string))
+            inners = [[outer, list(re.finditer(pattern, outer.group(0)[1:-1]))] for outer in outers]
+            inners = [[i[0], j] for i in inners for j in i[1] if i[1] and j.group(0).count('{') == 1]
+            inners = [[o.start()+i.start()+1,o.start()+i.end()+1, i.group(0)[1:-1].strip()] for o, i in inners]
+            for inner in inners:
+                string = string[:inner[0]] + '__{0}__'.format(inner[2]) + string[inner[1]:]
+                variables.add(inner[2])
+            replaced_strings[literal.group('strname')] = string
         args = '({0})'.format(', '.join('__{0}__'.format(v) for v in variables))
         code = '{' + re.sub(r'\n +{\s*([^,}]+?)\s*}\n\s+', r'__\1__', code[1:-1]) + '}'
         code = 'def ' + args + code
@@ -284,5 +296,4 @@ codecs.register(search_function)
 
 if __name__ == '__main__':
     with open('brackets_test.py', 'rb') as f:
-
         print(f.read().decode('brackets'))

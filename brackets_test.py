@@ -32,6 +32,12 @@ template = def {
 func = template.format(10)
 func()
 
+hello = def {
+    print(`(Hello {{0}})`)
+}
+
+hello.format('Pouya')()
+
 x = 10
 
 if (x > 10) {
