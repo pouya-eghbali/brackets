@@ -143,6 +143,40 @@ def y(i, mul=1):
 print(y?(3, mul=10)) # will print 60
 ```
 
+Regex support is available, to define regex patterns you can do:
+
+```
+/^hel+o+$/iu
+```
+
+where i and u are flags, available flags are:
+
+* a, l, u for ASCII, LOCALE, UNICODE
+* b, e for BESTMATCH, ENHANCEDMATCH
+* p for POSIX
+* r for REVERSE
+* 0, 1 for VERSION0, VERSION1
+* f, i for FULLCASE, IGNORECASE
+* m, d, v, w for MULTILINE, DOTALL, VERBOSE, WORD
+
+We're using regex lib at https://pypi.python.org/pypi/regex read docs for more info. To match you can do:
+
+```
+/^hel+o+$/i.match('HeLlLloOoOoOo')
+```
+
+or
+
+```
+'HeLlLloOoOoOo' =~ /^hel+o+$/i
+```
+
+to replace you can do:
+
+```
+(('HeLlLloOoOoOo' ~= /o/O/u) ~= /l/L/) ~= /e/E/
+```
+
 ## Project Info
 
 Github project page: https://github.com/pooya-eghbali/brackets

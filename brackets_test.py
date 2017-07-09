@@ -83,3 +83,7 @@ a = Test()
 class Test{def __init__(self){print('Just testing the other classes');}}
 
 a = Test()
+
+print(/^hel+o+$/i.match('HeLlLloOoOoOo'))
+print('HeLlLloOoOoOo' =~ /^hel+o+$/i)
+print((('HeLlLloOoOoOo' ~= /o/O/u) ~= /l/L/) ~= /e/E/)

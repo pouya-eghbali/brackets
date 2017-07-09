@@ -4,7 +4,7 @@ import regex as re
 from random import randrange
 from yapf.yapflib.yapf_api import FormatCode
 
-__version__ = '0.3.6'
+__version__ = '0.3.7'
 __author__  = 'Pooya Eghbali [persian.writer at gmail]'
 
 def translate(a):
@@ -25,11 +25,15 @@ def translate(a):
     class_np_matcher     = create_np_matcher('class\s*(?<name>[^(]+?)')
     else_matcher         = create_np_matcher('else')
     with_matcher         = create_matcher('with')
-    string_matcher       = lambda x: re.search('""".*?"""'+"|'''.*?'''"+'|".*?"'+"|'.*?'",x,re.DOTALL)
-    comment_matcher      = lambda x: re.search(r"//.*?\n|/\*.*?(\*/)",x,re.DOTALL)
+    string_matcher       = lambda x: re.search('[urf]?('+'""".*?"""'+"|'''.*?'''"+'|".*?"'+"|'.*?')",x,re.DOTALL)
+    comment_matcher      = lambda x: re.search(r"//.*?\n|/\*.*?(\*/)|#.*?\n",x,re.DOTALL)
     bracket_matcher      = re.compile(r'(?<bracket>{(?:[^{}]++|(?&bracket))*})', flags=re.VERBOSE)
     literal_matcher      = lambda x: re.search(r"`.*?`",x,re.DOTALL)
-    conditional_matcher  = re.compile(r'((([^(){} ]+|(\((?>[^()]+|(?4))*\)))+(?4)*)(\.(?3))*)\?((?4))', flags=re.VERBOSE)
+    conditional_matcher  = re.compile(r'((([^(){}:;=~\s,\[\]]+|(\((?>[^()]+|(?4))*\)))+(?4)*)(\.(?3))*)\?((?4))', flags=re.VERBOSE)
+    re_literal_matcher   = re.compile(r'(?<=[(){}:;=~\[\]]\s*)/(([^/*](\\/|[^/])*?))/([alubepr01fimdvw]*)', flags=re.VERBOSE)
+    tre_literal_matcher  = re.compile(r'(?<=[(){}:;=~\[\]]\s*)/(([^/*](\\/|[^/])*?))/(([^/*]*(\\/|[^/\n])*?))/([alubepr01fimdvw]*)', flags=re.VERBOSE)
+    re_match_matcher     = re.compile(r'((([^(){}:;=~\s,\[\]]+|(\((?>[^()]+|(?4))*\)))+(?4)*)(\.(?3))*)\s*=~\s*((?1))', flags=re.VERBOSE)
+    re_sub_matcher       = re.compile(r'((([^(){}:;=~\s,\[\]]+|(\((?>[^()]+|(?4))*\)))+(?4)*)(\.(?3))*)\s*~=\s*((?1))', flags=re.VERBOSE)
 
     # replace all escapes oh well:
 
@@ -41,14 +45,11 @@ def translate(a):
           .replace('\\"', unique_double_slash_replacer)
           .replace('\\`', unique_grave_slash_replacer))
 
-    # pew pew template literals
+    # well, i'll just remove the comments:
 
-    fstrlitrtm = bool(literal_matcher(a))
-
-    while (literal_matcher(a)):
-        start, end = literal_matcher(a).span()
-        literal = a[start:end]
-        a = a[:start] + 'FormatStringLiteral("{0}", globals(), locals())'.format(literal[1:-1]) + a[end:]
+    while (comment_matcher(a)):
+        start, end =  (comment_matcher(a)).span()
+        a = a[:start] + a[end:]
 
     # pew pew all the strings
 
@@ -64,11 +65,88 @@ def translate(a):
         replaced_strings[unique_replacer] = a[string[0]:string[1]]
         a = a[:string[0]] + '-*'+unique_replacer+'*-\n' + a[string[1]:]
 
-    # well, i'll just remove the comments:
+    # pew pew regex literals
 
-    while (comment_matcher(a)):
-        start, end =  (comment_matcher(a)).span()
-        a = a[:start] + a[end:]
+    flagmap = {
+        'a': 're.ASCII',     'l': 're.LOCALE', 'u': 're.UNICODE',
+        'b': 're.BESTMATCH', 'e': 're.ENHANCEMATCH',
+        'p': 're.POSIX',     'r': 're.REVERSE',
+        '0': 're.VERSION0',  '1': 're.VERSION1',
+        'f': 're.FULLCASE',  'i': 're.IGNORECASE',
+        'm': 're.MULTILINE', 'd': 're.DOTALL',
+        'v': 're.VERBOSE',   'w': 're.WORD'
+    }
+
+    match = tre_literal_matcher.search(a)
+    tregexrtm = bool(match)
+
+    while (match):
+        start, end = match.span()
+        pattern = match.group(1)
+        repl = match.group(4)
+        flags = '|'.join(flagmap[f] for f in match.group(7) if f in flagmap)
+        pattern = "r'{0}'".format(pattern)
+        repl = "r'{0}'".format(repl)
+
+        unique_replacer = '%030x' % randrange(16**50)
+        while unique_replacer in replaced_strings:
+            unique_replacer = '%030x' % randrange(16**50)
+
+        replaced_strings[unique_replacer] = pattern
+        pattern = unique_replacer
+
+        unique_replacer = '%030x' % randrange(16**50)
+        while unique_replacer in replaced_strings:
+            unique_replacer = '%030x' % randrange(16**50)
+
+        replaced_strings[unique_replacer] = repl
+        repl = unique_replacer
+
+        code = "RegexSubLiteral(re.compile(-*{0}*-, {1}), -*{2}*-)".format(pattern, flags, repl)
+        a = a[:start] + code + a[end:]
+        match = tre_literal_matcher.search(a)
+
+    while re_sub_matcher.search(a):
+        a = re_sub_matcher.sub(r'\6.sub(\1)', a)
+
+    match = re_literal_matcher.search(a)
+    regexrtm = bool(match)
+
+    while (match):
+        start, end = match.span()
+        pattern = match.group(1)
+        flags = '|'.join(flagmap[f] for f in match.group(4) if f in flagmap)
+        string = "r'{0}'".format(pattern)
+
+        unique_replacer = '%030x' % randrange(16**50)
+        while unique_replacer in replaced_strings:
+            unique_replacer = '%030x' % randrange(16**50)
+
+        replaced_strings[unique_replacer] = string
+
+        code = "re.compile(-*{0}*-, {1})".format(unique_replacer, flags)
+        a = a[:start] + code + a[end:]
+        match = re_literal_matcher.search(a)
+
+    while re_match_matcher.search(a):
+        a = re_match_matcher.sub(r'\6.match(\1)', a)
+
+    # pew pew template literals
+
+    fstrlitrtm = bool(literal_matcher(a))
+
+    while (literal_matcher(a)):
+        start, end = literal_matcher(a).span()
+        literal = a[start:end]
+        string = literal[1:-1]
+
+        unique_replacer = '%030x' % randrange(16**50)
+        while unique_replacer in replaced_strings:
+            unique_replacer = '%030x' % randrange(16**50)
+
+        replaced_strings[unique_replacer] = '"{0}"'.format(string)
+
+        a = a[:start] + 'FormatStringLiteral(-*{0}*-, globals(), locals())'.format(unique_replacer) + a[end:]
 
     # ; means line-break, sooooo:
 
@@ -284,6 +362,10 @@ def translate(a):
         a = 'from brackets.runtime import FormatStringLiteral\n' + a
     if cndfnrtm:
         a = 'from brackets.runtime import ConditionalFunctionCall\n' + a
+    if tregexrtm:
+        a = 'from brackets.runtime import RegexSubLiteral\n' + a
+    if regexrtm:
+        a = 'import regex as re\n' + a
 
     # reformat code?
 

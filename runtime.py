@@ -28,6 +28,14 @@ class BracketsTemplate(object):
     def __call__(self):
         return self.callable(**self.format)
 
+class RegexSubLiteral(object):
+    def __init__(self, matcher, repl):
+        self.matcher = matcher
+        self.repl    = repl
+
+    def sub(self, string):
+        return self.matcher.sub(self.repl, string)
+
 def FormatStringLiteral(string, globals, locals):
     matcher = re.compile('\{.*?\}')
     match   = matcher.search(string)
