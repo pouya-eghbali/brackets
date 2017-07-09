@@ -286,8 +286,6 @@ def translate(a):
 
     # reformat code?
 
-    print(a)
-
     a = FormatCode(a)[0]
 
     return a
