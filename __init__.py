@@ -4,7 +4,7 @@ import regex as re
 from random import randrange
 from yapf.yapflib.yapf_api import FormatCode
 
-__version__ = '0.3.5'
+__version__ = '0.3.6'
 __author__  = 'Pooya Eghbali [persian.writer at gmail]'
 
 def translate(a):
@@ -221,7 +221,8 @@ def translate(a):
         args = '({0})'.format(', '.join('__{0}__'.format(v) for v in variables))
         code = '{' + re.sub(r'\n +{\s*([^,}]+?)\s*}\n\s+', r'__\1__', code[1:-1]) + '}'
         code = 'def ' + args + code
-        code = '{0} = BracketsTemplateCreator({1})'.format(name, code)
+        args = '[{0}]'.format(', '.join('"__{0}__"'.format(v) for v in variables))
+        code = '{0} = BracketsTemplateCreator({1}, {2})'.format(name, code, args)
         a = code.rstrip()+'\n' + a[:start] + name + a[end:]
         match = template_matcher.search(a)
 
@@ -311,4 +312,3 @@ codecs.register(search_function)
 if __name__ == '__main__':
     with open('brackets_test.py', 'rb') as f:
         print(f.read().decode('brackets'))
-

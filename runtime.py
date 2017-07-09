@@ -8,14 +8,16 @@ class BracketsTemplateCreator(object):
         print({keyword});
     }
     """
-    def __init__(self, callable):
+    def __init__(self, callable, args):
         self.callable = callable
+        self.args     = args
 
     def format(self, *args, **kwargs):
         format = {}
         for index, arg in enumerate(args):
             format['__{0}__'.format(index)] = arg
         format.update(kwargs)
+        format = {f:format[f] for f in self.args}
         return BracketsTemplate(self.callable, format)
 
 class BracketsTemplate(object):
