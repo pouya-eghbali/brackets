@@ -4,7 +4,7 @@ import regex as re
 from random import randrange
 from yapf.yapflib.yapf_api import FormatCode
 
-__version__ = '0.3.4'
+__version__ = '0.3.5'
 __author__  = 'Pooya Eghbali [persian.writer at gmail]'
 
 def translate(a):
