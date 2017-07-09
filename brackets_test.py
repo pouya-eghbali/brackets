@@ -38,6 +38,14 @@ hello = def {
 
 hello.format('Pouya')()
 
+y = 10
+print(y?(3, mul=10))
+
+def y(i, mul=1):
+    return (i+3) * mul
+
+print(y?(3, mul=10))
+
 x = 10
 
 if (x > 10) {

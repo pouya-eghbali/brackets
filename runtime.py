@@ -36,3 +36,8 @@ def FormatStringLiteral(string, globals, locals):
         string = string[:start] + str(val) + string[end:]
         match   = matcher.search(string)
     return string
+
+def ConditionalFunctionCall(function, *args, **kwargs):
+    if callable(function):
+        return function(*args, **kwargs)
+    return function

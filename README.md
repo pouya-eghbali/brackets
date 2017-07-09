@@ -131,6 +131,18 @@ x, y = 2, 10
 print(`x is {x} and y is {x}, soooo x * y is {x * y}`)
 ```
 
+Add ? before an object's () to execute them only if they're callable, otherwise just to assume its value:
+
+```
+y = 10
+print(y?(3, mul=10)) # will print 10
+
+def y(i, mul=1):
+    return (i+3) * mul
+
+print(y?(3, mul=10)) # will print 60
+```
+
 ## Project Info
 
 Github project page: https://github.com/pooya-eghbali/brackets

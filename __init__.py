@@ -29,6 +29,7 @@ def translate(a):
     comment_matcher      = lambda x: re.search(r"//.*?\n|/\*.*?(\*/)",x,re.DOTALL)
     bracket_matcher      = re.compile(r'(?<bracket>{(?:[^{}]++|(?&bracket))*})', flags=re.VERBOSE)
     literal_matcher      = lambda x: re.search(r"`.*?`",x,re.DOTALL)
+    conditional_matcher  = re.compile(r'((([^(){} ]+|(\((?>[^()]+|(?4))*\)))+(?4)*)(\.(?3))*)\?((?4))', flags=re.VERBOSE)
 
     # replace all escapes oh well:
 
@@ -42,10 +43,9 @@ def translate(a):
 
     # pew pew template literals
 
-    fstrlitrtm = False
+    fstrlitrtm = bool(literal_matcher(a))
 
     while (literal_matcher(a)):
-        fstrlitrtm = True
         start, end = literal_matcher(a).span()
         literal = a[start:end]
         a = a[:start] + 'FormatStringLiteral("{0}", globals(), locals())'.format(literal[1:-1]) + a[end:]
@@ -222,7 +222,7 @@ def translate(a):
         code = '{' + re.sub(r'\n +{\s*([^,}]+?)\s*}\n\s+', r'__\1__', code[1:-1]) + '}'
         code = 'def ' + args + code
         code = '{0} = BracketsTemplateCreator({1})'.format(name, code)
-        a = code + '\n' + a[:start] + name + a[end:]
+        a = code.rstrip()+'\n' + a[:start] + name + a[end:]
         match = template_matcher.search(a)
 
     # find and pew pew lambdas:
@@ -232,8 +232,20 @@ def translate(a):
         start, end = match.span()
         name = 'lambda_%030x' % randrange(16**50)
         code = 'def ' + name + match.group('paren') + ':' + match.group('bracket')[1:-1]
-        a = code + a[:start] + name + a[end:]
+        a = code.rstrip()+'\n' + a[:start] + name + a[end:]
         match = lambda_matcher.search(a)
+
+    # find and pew pew conditional functions
+
+    match = conditional_matcher.search(a)
+    cndfnrtm = bool(match)
+    while match:
+        func  = match.group(1)
+        args  = match.group(6)
+        start, end = match.span()
+        code = 'ConditionalFunctionCall({0}, {1})'.format(func, args[1:-1])
+        a = a[:start] + code + a[end:]
+        match = conditional_matcher.search(a)
 
     # replace encoding thingy?
 
@@ -269,8 +281,12 @@ def translate(a):
         a = 'from brackets.runtime import BracketsTemplateCreator, BracketsTemplate\n' + a
     if fstrlitrtm:
         a = 'from brackets.runtime import FormatStringLiteral\n' + a
+    if cndfnrtm:
+        a = 'from brackets.runtime import ConditionalFunctionCall\n' + a
 
     # reformat code?
+
+    print(a)
 
     a = FormatCode(a)[0]
 
@@ -297,3 +313,4 @@ codecs.register(search_function)
 if __name__ == '__main__':
     with open('brackets_test.py', 'rb') as f:
         print(f.read().decode('brackets'))
+
