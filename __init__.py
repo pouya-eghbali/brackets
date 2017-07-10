@@ -4,7 +4,7 @@ import regex as re
 from random import randrange
 from yapf.yapflib.yapf_api import FormatCode
 
-__version__ = '0.3.7'
+__version__ = '0.3.8'
 __author__  = 'Pooya Eghbali [persian.writer at gmail]'
 
 def translate(a):
@@ -34,6 +34,7 @@ def translate(a):
     tre_literal_matcher  = re.compile(r'(?<=[(){}:;=~\[\]]\s*)/(([^/*](\\/|[^/])*?))/(([^/*]*(\\/|[^/\n])*?))/([alubepr01fimdvw]*)', flags=re.VERBOSE)
     re_match_matcher     = re.compile(r'((([^(){}:;=~\s,\[\]]+|(\((?>[^()]+|(?4))*\)))+(?4)*)(\.(?3))*)\s*=~\s*((?1))', flags=re.VERBOSE)
     re_sub_matcher       = re.compile(r'((([^(){}:;=~\s,\[\]]+|(\((?>[^()]+|(?4))*\)))+(?4)*)(\.(?3))*)\s*~=\s*((?1))', flags=re.VERBOSE)
+    cls_extend_matcher   = re.compile(r'class\s+([a-zA-Z_0-9]+)\s*(?<args>\((?:[^()]++|(?&args))*\))\s+extends\s+([a-zA-Z_0-9]+)\s*((?&args))\s*(?<bracket>{(?:[^{}]++|(?&bracket))*})', flags=re.VERBOSE)
 
     # replace all escapes oh well:
 
@@ -148,6 +149,22 @@ def translate(a):
 
         a = a[:start] + 'FormatStringLiteral(-*{0}*-, globals(), locals())'.format(unique_replacer) + a[end:]
 
+    # pew pew class extends:
+
+    match = cls_extend_matcher.search(a)
+
+    while match:
+        start, end = match.span()
+        new_class_name = match.group(1)
+        new_class_args = '(self, ' + match.group(2)[1:-1] + ')'
+        parent_class_name = match.group(3)
+        parent_class_args = match.group(4)
+        body = match.group(5)[1:-1]
+        code = 'class {0}({1}){{\n    def __init__{2}{{\n        super().__init__{3};\n    try{{self.extend{2}}}except{{pass}}\n    }}\n    {4}}}'
+        code = code.format(new_class_name, parent_class_name, new_class_args, parent_class_args, body)
+        a = a[:start] + code + a[end:]
+        match = cls_extend_matcher.search(a)
+        
     # ; means line-break, sooooo:
 
     a = re.sub(';\s*', '\n', a)

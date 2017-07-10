@@ -87,3 +87,34 @@ a = Test()
 print(/^hel+o+$/i.match('HeLlLloOoOoOo'))
 print('HeLlLloOoOoOo' =~ /^hel+o+$/i)
 print((('HeLlLloOoOoOo' ~= /o/O/u) ~= /l/L/) ~= /e/E/)
+
+class Animal(object) {
+    def __init__(self, name) {
+	    self.name = name
+	}
+	def hi(self) {
+	    print("hi, my name is {0}".format(self.name))
+	}
+}
+
+class Dog(name, breed) extends Animal(name) {
+    def extend(self, name, breed) {
+	    self.breed = breed
+	}
+    def woof(self) {
+	    print("woof woof!")
+	}
+}
+
+class Cat(name) extends Animal(name) {
+    def meow(self) {
+	    print("meow!")
+	}
+}
+
+dog = Dog('Bailey', 'Shepherd')
+dog.hi()
+dog.woof()
+
+cat = Cat('Smokey')
+cat.meow()

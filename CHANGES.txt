@@ -1,3 +1,6 @@
+v0.3.8, July 10 2017
+-- Ability to extend classes
+
 v0.3.7, July 09 2017
 -- Added support for regex
 
