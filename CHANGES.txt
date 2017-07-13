@@ -1,4 +1,7 @@
-v0.3.8, July 14 2017
+v0.4.1, July 14 2017
+-- Fixed readme on pypi
+
+v0.4.0, July 14 2017
 -- Added brackets executables
 -- Importer system
 -- Docs and website

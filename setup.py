@@ -2,16 +2,16 @@ from setuptools import find_packages, setup
 
 setup(
     name='brackets',
-    version='0.4.0',
+    version='0.4.1',
     author='Pooya Eghbali',
     author_email='persian.writer@gmail.com',
     packages=find_packages(),
 	package_data={
         'brackets.tests': ['*.bpy'],
     },
-    url='https://github.com/pooya-eghbali/brackets',
+    url='http://python-brackets.org',
     license='BSD',
-    description="""Use brackets instead of indentation. Plus much more candies.""",
+    description="""Use {} instead of indenting, write powerful lambdas, and much more sugar added to Python's syntax and abilities.""",
     classifiers= ['Intended Audience :: Developers',
                   'License :: OSI Approved :: BSD License',
                   'Operating System :: OS Independent',

@@ -3,7 +3,7 @@ import brackets.importer as importer
 import brackets.runtime as runtime
 import builtins as __builtins__
 
-__version__ = '0.4.0'
+__version__ = '0.4.1'
 __author__  = 'Pooya Eghbali [persian.writer at gmail]'
 
 def eval(code, *args, **kwargs):
