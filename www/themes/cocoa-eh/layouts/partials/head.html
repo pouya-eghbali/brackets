@@ -1,0 +1,20 @@
+<head>
+{{ partial "meta.html" . }}
+<title>
+{{ $url := replace .Permalink ( printf "%s" .Site.BaseURL) "" }}
+{{ if eq $url "" }}
+    {{ .Site.Title }}
+{{ else }}
+    {{ if .Params.heading }} {{ .Params.heading }} {{ else }} {{ .Site.Title }} - {{ .Title }} {{ end }}
+{{ end }}
+</title>
+<link rel="canonical" href="{{ .Permalink }}">
+<!-- jQuery library (served from Google) -->
+<script src="/js/slider/jquery-3.1.1.min.js"></script>
+<!-- bxSlider Javascript file -->
+<script src="/js/slider/responsiveslides.min.js"></script>
+<!-- bxSlider CSS file -->
+<link href="/js/slider/responsiveslides.css" rel="stylesheet" />
+<link href="/css/custom.css" rel="stylesheet" />
+{{ partial "head_includes.html" . }}
+</head>

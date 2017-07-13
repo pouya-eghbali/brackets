@@ -1,0 +1,66 @@
+<section class="footer">
+    <div class="container">
+
+        {{ if .Site.Params.githubRepo }}
+        <div class="copyright">
+            <a href="https://github.com/{{ .Site.Params.githubRepo }}/tree/master/content/{{ .File.Path }}" target="_blank">View this post on GitHub</a>
+        </div>
+        {{ end }}
+
+        <div class="copyright">
+
+        {{ if .Site.Params.copyright }}
+            {{ if .Site.Params.copyrightUrl }}
+                <a href="{{ .Site.Params.copyrightUrl }}">{{ .Site.Params.copyright }}</a>
+            {{ else }}
+                <a href="{{ .Site.BaseURL }}license">{{ .Site.Params.copyright }}</a>
+            {{ end }}
+        {{ end }}
+
+        </div>
+        <div class="icons">
+
+        {{ if .Site.Params.facebook }}
+            <a href="https://facebook.com/{{ .Site.Params.facebook }}" target="_blank">
+                <img class="icon" src="/img/facebook.svg" alt="facebook" />
+            </a>
+        {{ end }}
+
+        {{ if .Site.Params.github }}
+            <a href="https://github.com/{{ .Site.Params.github }}" target="_blank">
+                <img class="icon" src="/img/github.svg" alt="github" />
+            </a>
+        {{ end }}
+
+        {{ if .Site.Params.twitter }}
+            <a href="https://twitter.com/{{ .Site.Params.twitter }}" target="_blank">
+                <img class="icon" src="/img/twitter.svg" alt="twitter" />
+            </a>
+        {{ end }}
+
+        {{ if .Site.Params.linkedin }}
+            <a href="https://www.linkedin.com/in/{{ .Site.Params.linkedin }}" target="_blank">
+                <img class="icon" src="/img/linkedin.svg" alt="linkedin" />
+            </a>
+        {{ end }}
+
+        {{ if .Site.Params.email }}
+            <a href="mailto:{{ .Site.Params.email }}">
+                <img class="icon" src="/img/email.svg" alt="email" />
+            </a>
+        {{ end }}
+
+        {{ if .Site.RSSLink }}
+            <a href="{{ .Site.RSSLink }}">
+                <img class="icon" src="/img/rss.svg" alt="rss" />
+            </a>
+        {{ end }}
+
+        </div>
+    </div>
+</section>
+
+{{ partial "footer_scripts" . }}
+
+</body>
+</html>

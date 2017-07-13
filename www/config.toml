@@ -1,0 +1,29 @@
+baseurl = "https://python-brackets.org/"
+theme = "cocoa-eh"
+builddrafts = true
+canonifyurls = true
+contentdir = "content"
+languageCode = "en-US"
+layoutdir = "layouts"
+publishdir = "public"
+author = "Pouya Eghbali"
+title = "Python Brackets"
+disqusshortname = ""
+pluralizelisttitles = false
+
+[permalinks]
+blog = "blog/:slug/"
+
+[params]
+dateform = "Jan 2, 2006"
+dateformfull = "Mon Jan 2 2006 15:04:05 MST"
+description = "Python Brackets Programming Language"
+copyright = "Copyright © 2017 Python Brackets"
+logofile = "img/logo.png"
+faviconfile = "img/logo.png"
+highlightjs = true
+progressively = true
+lang = "en"
+github = "pooya-eghbali/brackets"
+social_banner = "img/banner.png"
+posts_navigation = true

@@ -1,0 +1,38 @@
+<!DOCTYPE html>
+<html lang="{{ .Site.LanguageCode }}">
+
+{{ partial "head.html" . }}
+
+<body>
+
+{{ if .IsPage }}
+<section class="header">
+{{ else }}
+<section class="header header-home">
+{{ end }}
+    <div class="container">
+        <a href="{{ .Site.BaseURL }}"><img class="logo" src="{{ .Site.Params.logofile | absURL }}" alt="logo" /></a>
+        <div class="content">
+            <a href="{{ .Site.BaseURL }}"><div class="name"><h1>{{ .Site.Title }}</h1></div></a>
+            <nav>
+                <ul>
+                    {{ if ne (len (where .Site.RegularPages "Section" "blog")) 0 }}
+                        <a href="{{ .Site.BaseURL }}blog/"><li>Blog</li></a>
+                    {{ end }}
+                    {{ range $.Site.Home.Sections }}
+                        {{ range first 1 (where .Pages "Section" "ne" "")}}
+                            {{ if ne .Section "blog"}}
+                            <a href="{{ .Section | urlize | absURL }}"><li>{{ .Section }}</li></a>
+                            {{ end }}
+                        {{ end }}
+                    {{ end }}
+                    {{ range where .Site.RegularPages "Section" ""}}
+                        {{ if and (ne .Title "License") (ne .Title "Home")}}
+                            <a href="{{ .Permalink }}"><li>{{ .Title }}</li></a>
+                        {{ end }}
+                    {{ end }}
+                </ul>
+            </nav>
+        </div>
+    </div>
+</section>

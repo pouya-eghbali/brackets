@@ -1,0 +1,22 @@
+.slide {
+  width: 100%;
+}
+
+.slide .code pre {
+  margin-left: 0 !important;
+}
+
+.rslides_tabs li {
+  display: inline-block;
+  border: 1px solid rgba(0,0,0,.1);
+  width: 35px;
+  height: 35px;
+}
+
+.rslides_tabs li:hover {
+  background-color: rgba(0,0,0,.1);
+}
+
+.rslides_tabs {
+  text-align: center;
+}
