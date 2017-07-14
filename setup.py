@@ -11,7 +11,7 @@ setup(
     },
     url='http://python-brackets.org',
     license='BSD',
-    description="""Use {} instead of indenting, write powerful lambdas, and much more sugar added to Python's syntax and abilities.""",
+    description="""Use curly braces instead of indenting, plus much more sugar added to Python's syntax.""",
     classifiers= ['Intended Audience :: Developers',
                   'License :: OSI Approved :: BSD License',
                   'Operating System :: OS Independent',
