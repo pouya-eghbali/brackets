@@ -33,6 +33,10 @@ def translate(a):
     re_sub_matcher       = re.compile(r'((([^(){}:;=~\s,\[\]]+|(\((?>[^()]+|(?4))*\)))+(?4)*)(\.(?3))*)\s*~=\s*((?1))', flags=re.VERBOSE)
     cls_extend_matcher   = re.compile(r'class\s+([a-zA-Z_0-9]+)\s*(?<args>\((?:[^()]++|(?&args))*\))\s+extends\s+([a-zA-Z_0-9]+)\s*((?&args))\s*(?<bracket>{(?:[^{}]++|(?&bracket))*})', flags=re.VERBOSE)
 
+    # not allowing intend and {} to be mixed:
+
+    a = re.sub('\n[\t ]+', '\n', a)
+
     # replace all escapes oh well:
 
     unique_slash_replacer          = '%030x' % randrange(16**50)
@@ -161,7 +165,7 @@ def translate(a):
         code = code.format(new_class_name, parent_class_name, new_class_args, parent_class_args, body)
         a = a[:start] + code + a[end:]
         match = cls_extend_matcher.search(a)
-        
+
     # ; means line-break, sooooo:
 
     a = re.sub(';\s*', '\n', a)
@@ -406,5 +410,5 @@ def search_function(s):
 codecs.register(search_function)
 
 if __name__ == '__main__':
-    with open('brackets_test.py', 'rb') as f:
+    with open('tests/with_importer.bpy', 'rb') as f:
         print(f.read().decode('brackets'))

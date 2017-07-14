@@ -7,9 +7,8 @@ Welcome to Brackets's documentation!
 ====================================
 
 .. image:: https://github.com/pooya-eghbali/brackets/raw/master/logo.png
-   :scale: 50 %
+   :width: 200 px
    :alt: Python Brackets
-   :align: left
 
 This documentation covers details about getting started with and using Python
 Brackets programming language.

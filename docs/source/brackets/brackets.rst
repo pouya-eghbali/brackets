@@ -6,7 +6,7 @@ type ``brackets`` in your command line environment, terminal or console::
 
     brackets
 
-this will bring up the Brackets shell, were you can write and execute Brackets
+this will bring up the Brackets shell, where you can write and execute Brackets
 code. You can use and import any Python libraries and files you want. Remember,
 all Brackets code is Python compatible and all Python code can run in Brackets.
 

@@ -11,7 +11,6 @@ Python to be used instead of indenting, later, trying to add functional syntax
 to Python, I rewrote that code, named it Brackets, and further developed it to
 be what it is today.
 
-Basically, Brackets is Python, with optional indenting (You can either indent
-your code, or use {} or mix both of them, you're free) without any performance
-difference compared to Python. Brackets also brings a lot more sugar with it
-than just the syntax.
+Basically, Brackets is Python, but with {} instead of indenting, without any
+performance difference compared to Python. Brackets also brings a lot more sugar
+with it than just the syntax.

@@ -4,4 +4,4 @@ hugo
 cd ..
 cd docs
 make html
-cd ..
+

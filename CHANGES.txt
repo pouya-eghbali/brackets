@@ -1,3 +1,6 @@
+v0.5.0 July 14 2017
+-- Not allowing indenting and {} mix
+
 v0.4.1, July 14 2017
 -- Fixed readme on pypi
 
