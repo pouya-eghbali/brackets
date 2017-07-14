@@ -15,7 +15,7 @@ def translate(a):
     try_matcher          = create_np_matcher('try')
     except_matcher       = create_matcher('except')
     except_np_matcher    = create_np_matcher('except')
-    def_matcher          = create_matcher('def\s*(?<name>[^(]+?)')
+    def_matcher          = create_matcher('def\s*(?<name>[^(\s]+?)')
     lambda_matcher       = create_matcher('def')
     template_matcher     = create_np_matcher('def')
     class_matcher        = create_matcher('class\s*(?<name>[^(]+?)')
