@@ -9,3 +9,4 @@ after install, these will be explained here.
    :caption: Contents:
 
    bpy-compile
+   jupyter

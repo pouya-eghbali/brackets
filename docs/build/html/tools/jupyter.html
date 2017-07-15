@@ -8,7 +8,7 @@
   
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   
-  <title>Tools &mdash; Brackets 0.5.2 documentation</title>
+  <title>Jupyter &mdash; Brackets 0.5.2 documentation</title>
   
 
   
@@ -36,8 +36,8 @@
               href="../genindex.html"/>
         <link rel="search" title="Search" href="../search.html"/>
     <link rel="top" title="Brackets 0.5.2 documentation" href="../index.html"/>
-        <link rel="next" title="bpy-compile" href="bpy-compile.html"/>
-        <link rel="prev" title="Importer hooks" href="../brackets/importer.html"/> 
+        <link rel="up" title="Tools" href="index.html"/>
+        <link rel="prev" title="bpy-compile" href="bpy-compile.html"/> 
 
   
   <script src="../_static/js/modernizr.min.js"></script>
@@ -96,9 +96,9 @@
 <li class="toctree-l1"><a class="reference internal" href="../getting-started/index.html">Getting Started</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../tutorial/index.html">Tutorial</a></li>
 <li class="toctree-l1"><a class="reference internal" href="../brackets/index.html">Using Brackets</a></li>
-<li class="toctree-l1 current"><a class="current reference internal" href="#">Tools</a><ul>
+<li class="toctree-l1 current"><a class="reference internal" href="index.html">Tools</a><ul class="current">
 <li class="toctree-l2"><a class="reference internal" href="bpy-compile.html">bpy-compile</a></li>
-<li class="toctree-l2"><a class="reference internal" href="jupyter.html">Jupyter</a></li>
+<li class="toctree-l2 current"><a class="current reference internal" href="#">Jupyter</a></li>
 </ul>
 </li>
 </ul>
@@ -145,13 +145,15 @@
     
       <li><a href="../index.html">Docs</a> &raquo;</li>
         
-      <li>Tools</li>
+          <li><a href="index.html">Tools</a> &raquo;</li>
+        
+      <li>Jupyter</li>
     
     
       <li class="wy-breadcrumbs-aside">
         
             
-            <a href="../_sources/tools/index.rst.txt" rel="nofollow"> View page source</a>
+            <a href="../_sources/tools/jupyter.rst.txt" rel="nofollow"> View page source</a>
           
         
       </li>
@@ -164,16 +166,25 @@
           <div role="main" class="document" itemscope="itemscope" itemtype="http://schema.org/Article">
            <div itemprop="articleBody">
             
-  <div class="section" id="tools">
-<h1>Tools<a class="headerlink" href="#tools" title="Permalink to this headline">¶</a></h1>
-<p>Brackets has some tools, that are included in the package and are available
-after install, these will be explained here.</p>
-<div class="toctree-wrapper compound">
-<p class="caption"><span class="caption-text">Contents:</span></p>
-<ul>
-<li class="toctree-l1"><a class="reference internal" href="bpy-compile.html">bpy-compile</a></li>
-<li class="toctree-l1"><a class="reference internal" href="jupyter.html">Jupyter</a></li>
-</ul>
+  <div class="section" id="jupyter">
+<h1>Jupyter<a class="headerlink" href="#jupyter" title="Permalink to this headline">¶</a></h1>
+<p>Installing <cite>ibpykernel</cite> you’ll have access to Python Brackets from Jupyter’s
+<cite>qtconsole</cite> and <cite>notebook</cite></p>
+<p>It’s hosted on PyPI so to install:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">pip</span> <span class="n">install</span> <span class="n">ipbykernel</span>
+</pre></div>
+</div>
+<p>then to activate:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">python</span> <span class="o">-</span><span class="n">m</span> <span class="n">ipbykernel</span> <span class="n">install</span> <span class="o">--</span><span class="n">user</span>
+</pre></div>
+</div>
+<p>to run a <cite>qtconsole</cite>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">jupyter</span> <span class="n">qtconsole</span> <span class="o">--</span><span class="n">kernel</span> <span class="n">brackets</span>
+</pre></div>
+</div>
+<p>or for <cite>notebook</cite>:</p>
+<div class="highlight-default"><div class="highlight"><pre><span></span><span class="n">jupyter</span> <span class="n">notebook</span>
+</pre></div>
 </div>
 </div>
 
@@ -187,10 +198,8 @@ after install, these will be explained here.</p>
   
     <div class="rst-footer-buttons" role="navigation" aria-label="footer navigation">
       
-        <a href="bpy-compile.html" class="btn btn-neutral float-right" title="bpy-compile" accesskey="n" rel="next">Next <span class="fa fa-arrow-circle-right"></span></a>
       
-      
-        <a href="../brackets/importer.html" class="btn btn-neutral" title="Importer hooks" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
+        <a href="bpy-compile.html" class="btn btn-neutral" title="bpy-compile" accesskey="p" rel="prev"><span class="fa fa-arrow-circle-left"></span> Previous</a>
       
     </div>
   
