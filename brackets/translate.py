@@ -364,17 +364,6 @@ def translate(a):
 
     a = re.sub('#\s*coding:\s*brackets', '', a)
 
-    # put back the strings?
-
-    for string in replaced_strings:
-        a = a.replace('-*'+string+'*-', replaced_strings[string])
-
-    # fix escapes?
-
-    a = (a.replace(unique_slash_replacer,"\\'")
-          .replace(unique_grave_slash_replacer,'`')
-          .replace(unique_double_slash_replacer,'\\"')) 
-
     # fix empty lines with indent?
 
     a = re.sub(r'\n +\n', '\n', a)
@@ -405,6 +394,21 @@ def translate(a):
 
     f = a[:].split('\n')
     a = re.sub(r'debug\((\d+),(\d+)\) *', r'', a)
+
+    # put back the strings?
+
+    for string in replaced_strings:
+        a = a.replace('-*'+string+'*-', replaced_strings[string])
+
+    # fix escapes?
+
+    a = (a.replace(unique_slash_replacer,"\\'")
+          .replace(unique_grave_slash_replacer,'`')
+          .replace(unique_double_slash_replacer,'\\"'))
+
+    # remove debug code from strings
+
+    a = re.sub(r'debug\((\d+),(\d+)\)', r'', a)
 
     # reformat code?
     try:

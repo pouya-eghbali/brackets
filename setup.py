@@ -2,7 +2,7 @@ from setuptools import find_packages, setup
 
 setup(
     name='brackets',
-    version='0.5.2',
+    version='0.5.3',
     author='Pooya Eghbali',
     author_email='persian.writer@gmail.com',
     packages=find_packages(),
