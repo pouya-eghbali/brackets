@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Python Brackets</title>
-    <link>https://python-brackets.org/</link>
-    <description>Recent content on Python Brackets</description>
+    <title>Brackets on Python Brackets</title>
+    <link>https://python-brackets.org/tags/brackets/</link>
+    <description>Recent content in Brackets on Python Brackets</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <copyright>Copyright © 2017 Python Brackets</copyright>
     <lastBuildDate>Sat, 15 Jul 2017 16:48:18 +0430</lastBuildDate>
     
-	<atom:link href="https://python-brackets.org/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://python-brackets.org/tags/brackets/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -24,15 +24,6 @@ pip install ibpykernel  and after install is finished
 python -m ibpykernel install --user  and to use it with notebook
 jupyter notebook  and it&amp;rsquo;s available in create file menu
 You can view this project on PyPI or on Github.</description>
-    </item>
-    
-    <item>
-      <title>Home</title>
-      <link>https://python-brackets.org/home/</link>
-      <pubDate>Thu, 13 Jul 2017 23:04:31 +0430</pubDate>
-      
-      <guid>https://python-brackets.org/home/</guid>
-      <description>Bringing Brackets to Python  def fib(n) { a, b = 0, 1 while (a    Powerful anonymous functions  print([def(x) { if(x in [0, 1]) { return x }; while (x    Extends keyword for classes  class Dog(name, breed) extends Animal(name) { def extend(self, name, breed) { self.breed = breed } def woof(self) { print(&#34;woof woof!&#34;) } }    Function Templates  template = def { while ({0}){ {0} -= 1; print({0}); } } func = template.</description>
     </item>
     
   </channel>

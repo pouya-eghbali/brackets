@@ -27,3 +27,4 @@ lang = "en"
 github = "pooya-eghbali/brackets"
 social_banner = "img/banner.png"
 posts_navigation = true
+latestpostcount = 5

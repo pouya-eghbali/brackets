@@ -3,8 +3,25 @@
   xmlns:xhtml="http://www.w3.org/1999/xhtml">
   
   <url>
+    <loc>https://python-brackets.org/blog/python-brackets-jupyter-kernel/</loc>
+    <lastmod>2017-07-15T16:48:18+04:30</lastmod>
+  </url>
+  
+  <url>
     <loc>https://python-brackets.org/home/</loc>
     <lastmod>2017-07-13T23:04:31+04:30</lastmod>
+  </url>
+  
+  <url>
+    <loc>https://python-brackets.org/blog/</loc>
+    <lastmod>2017-07-15T16:48:18+04:30</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://python-brackets.org/tags/brackets/</loc>
+    <lastmod>2017-07-15T16:48:18+04:30</lastmod>
+    <priority>0</priority>
   </url>
   
   <url>
@@ -13,13 +30,26 @@
   </url>
   
   <url>
+    <loc>https://python-brackets.org/tags/jupyter/</loc>
+    <lastmod>2017-07-15T16:48:18+04:30</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
+    <loc>https://python-brackets.org/tags/kernel/</loc>
+    <lastmod>2017-07-15T16:48:18+04:30</lastmod>
+    <priority>0</priority>
+  </url>
+  
+  <url>
     <loc>https://python-brackets.org/</loc>
-    <lastmod>2017-07-13T23:04:31+04:30</lastmod>
+    <lastmod>2017-07-15T16:48:18+04:30</lastmod>
     <priority>0</priority>
   </url>
   
   <url>
     <loc>https://python-brackets.org/tags/</loc>
+    <lastmod>2017-07-15T16:48:18+04:30</lastmod>
     <priority>0</priority>
   </url>
   
