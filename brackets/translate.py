@@ -3,8 +3,19 @@ from encodings import utf_8
 import regex as re
 from random import randrange
 from yapf.yapflib.yapf_api import FormatCode
+import sys
 
 def translate(a):
+
+    o = a[:] # a copy of the original content just for fun
+
+    # create source map:
+
+    lines = reversed(list(re.finditer(r'(?<!\*-)[;}\n]', a)))
+
+    for line in lines:
+        start, end = line.span()
+        a = a[:start] + line.group(0) + 'debug({0},{1})'.format(start, end) + a[end:]
 
     create_matcher       = lambda keyword: re.compile(keyword + r'\s*(?<paren>\((?:[^()]++|(?&paren))*\))\s*(?<bracket>{(?:[^{}]++|(?&bracket))*})', flags=re.VERBOSE)
     create_np_matcher    = lambda keyword: re.compile(keyword + r'\s*(?<bracket>{(?:[^{}]++|(?&bracket))*})', flags=re.VERBOSE)
@@ -33,10 +44,6 @@ def translate(a):
     re_sub_matcher       = re.compile(r'((([^(){}:;=~\s,\[\]]+|(\((?>[^()]+|(?4))*\)))+(?4)*)(\.(?3))*)\s*~=\s*((?1))', flags=re.VERBOSE)
     cls_extend_matcher   = re.compile(r'class\s+([a-zA-Z_0-9]+)\s*(?<args>\((?:[^()]++|(?&args))*\))\s+extends\s+([a-zA-Z_0-9]+)\s*((?&args))\s*(?<bracket>{(?:[^{}]++|(?&bracket))*})', flags=re.VERBOSE)
 
-    # not allowing intend and {} to be mixed:
-
-    a = re.sub('\n[\t ]+', '\n', a)
-
     # replace all escapes oh well:
 
     unique_slash_replacer          = '%030x' % randrange(16**50)
@@ -46,12 +53,6 @@ def translate(a):
     a = (a.replace("\\'", unique_slash_replacer)
           .replace('\\"', unique_double_slash_replacer)
           .replace('\\`', unique_grave_slash_replacer))
-
-    # well, i'll just remove the comments:
-
-    while (comment_matcher(a)):
-        start, end =  (comment_matcher(a)).span()
-        a = a[:start] + a[end:]
 
     # pew pew all the strings
 
@@ -66,6 +67,21 @@ def translate(a):
 
         replaced_strings[unique_replacer] = a[string[0]:string[1]]
         a = a[:string[0]] + '-*'+unique_replacer+'*-\n' + a[string[1]:]
+
+    # not allowing indent and {} to be mixed:
+
+    a = re.sub('\n[\t ]+', '\n', a)
+
+    # well, i'll just remove the comments:
+
+    while (comment_matcher(a)):
+        start, end =  (comment_matcher(a)).span()
+        a = a[:start] + a[end:]
+
+    # pew pew some cools stuff
+
+    a = re.sub(r'from __future__ import braces\n|^from __future__ import braces$',
+                'print("hehe...")', a)
 
     # pew pew regex literals
 
@@ -357,20 +373,20 @@ def translate(a):
 
     a = (a.replace(unique_slash_replacer,"\\'")
           .replace(unique_grave_slash_replacer,'`')
-          .replace(unique_double_slash_replacer,'\\"'))
+          .replace(unique_double_slash_replacer,'\\"')) 
 
     # fix empty lines with indent?
 
-    a = re.sub(' +\n', '\n', a)
+    a = re.sub(r'\n +\n', '\n', a)
 
     # fix double empty lines?
 
-    a = re.sub('\n\n\n', '\n', a)
+    a = re.sub(r'\n\n\n', '\n', a)
 
     # fix dictionaries?
 
-    a = re.sub('\n}', '}', a)
-    a = re.sub('\n{\n', '{', a)
+    a = re.sub(r'\n}', '}', a)
+    a = re.sub(r'\n{\n', '{', a)
 
     # import runtime thingies?
 
@@ -385,9 +401,28 @@ def translate(a):
     if regexrtm:
         a = 'import regex as re\n' + a
 
-    # reformat code?
+    # remove all debug code
 
-    a = FormatCode(a)[0]
+    f = a[:].split('\n')
+    a = re.sub(r'debug\((\d+),(\d+)\) *', r'', a)
+
+    # reformat code?
+    try:
+        a = FormatCode(a)[0]
+    except SyntaxError as e:
+        line = f[e.lineno-1]
+        file = e.filename
+        pos  = re.search(r'debug\((\d+),(\d+)\)', line)
+        if not pos:
+            raise
+        pos = int(pos.group(1))
+        message = 'invalid syntax\n\nError in:\n\n'
+        start = pos-100
+        if start < 0:
+            start = 0
+        message += ('...' + o[start: pos+10] + '...\n\n\n')
+        message += 'Error happened at position ' + str(pos) +' at file ' + file
+        raise SyntaxError(message)
 
     return a
 

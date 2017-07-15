@@ -1,3 +1,9 @@
+v0.5.2 July 15 2017
+-- Added dummy debug info
+
+v0.5.1 July 15 2017
+-- Fix a parsing error in lambda
+
 v0.5.0 July 14 2017
 -- Not allowing indenting and {} mix
 
