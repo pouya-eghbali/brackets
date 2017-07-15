@@ -415,7 +415,6 @@ def translate(a):
         a = FormatCode(a)[0]
     except SyntaxError as e:
         line = f[e.lineno-1]
-        file = e.filename
         pos  = re.search(r'debug\((\d+),(\d+)\)', line)
         if not pos:
             raise
@@ -424,8 +423,8 @@ def translate(a):
         start = pos-100
         if start < 0:
             start = 0
-        message += ('...' + o[start: pos+10] + '...\n\n\n')
-        message += 'Error happened at position ' + str(pos) +' at file ' + file
+        message += ('...' + o[start: pos+100] + '...\n\n\n')
+        message += 'Error happened at position ' + str(pos)
         raise SyntaxError(message)
 
     return a

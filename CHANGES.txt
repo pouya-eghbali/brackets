@@ -1,3 +1,6 @@
+v0.5.5 July 16 2017
+-- Better debug messages
+
 v0.5.4 July 16 2017
 -- Fixed a bug with template literals
 
