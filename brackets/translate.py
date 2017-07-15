@@ -65,7 +65,10 @@ def translate(a):
         while unique_replacer in replaced_strings:
             unique_replacer = '%030x' % randrange(16**50)
 
-        replaced_strings[unique_replacer] = a[string[0]:string[1]]
+        matched_string = a[string[0]:string[1]]
+        matched_string = re.sub(r'debug\((\d+),(\d+)\)', r'', matched_string)
+
+        replaced_strings[unique_replacer] = matched_string
         a = a[:string[0]] + '-*'+unique_replacer+'*-\n' + a[string[1]:]
 
     # not allowing indent and {} to be mixed:
@@ -157,6 +160,7 @@ def translate(a):
         start, end = literal_matcher(a).span()
         literal = a[start:end]
         string = literal[1:-1]
+        string = re.sub(r'debug\((\d+),(\d+)\)', r'', string)
 
         unique_replacer = '%030x' % randrange(16**50)
         while unique_replacer in replaced_strings:
@@ -405,10 +409,6 @@ def translate(a):
     a = (a.replace(unique_slash_replacer,"\\'")
           .replace(unique_grave_slash_replacer,'`')
           .replace(unique_double_slash_replacer,'\\"'))
-
-    # remove debug code from strings
-
-    a = re.sub(r'debug\((\d+),(\d+)\)', r'', a)
 
     # reformat code?
     try:

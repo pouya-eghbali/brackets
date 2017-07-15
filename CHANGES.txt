@@ -1,3 +1,6 @@
+v0.5.4 July 16 2017
+-- Fixed a bug with template literals
+
 v0.5.3 July 15 2017
 -- Fixed a bug with strings
 
