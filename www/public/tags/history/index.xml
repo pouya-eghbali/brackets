@@ -1,15 +1,15 @@
 <?xml version="1.0" encoding="utf-8" standalone="yes" ?>
 <rss version="2.0" xmlns:atom="http://www.w3.org/2005/Atom">
   <channel>
-    <title>Brackets on Python Brackets</title>
-    <link>https://python-brackets.org/tags/brackets/</link>
-    <description>Recent content in Brackets on Python Brackets</description>
+    <title>History on Python Brackets</title>
+    <link>https://python-brackets.org/tags/history/</link>
+    <description>Recent content in History on Python Brackets</description>
     <generator>Hugo -- gohugo.io</generator>
     <language>en-US</language>
     <copyright>Copyright © 2017 Python Brackets</copyright>
     <lastBuildDate>Sat, 15 Jul 2017 18:46:40 +0430</lastBuildDate>
     
-	<atom:link href="https://python-brackets.org/tags/brackets/index.xml" rel="self" type="application/rss+xml" />
+	<atom:link href="https://python-brackets.org/tags/history/index.xml" rel="self" type="application/rss+xml" />
     
     
     <item>
@@ -20,20 +20,6 @@
       <guid>https://python-brackets.org/blog/why-brackets-was-created/</guid>
       <description>There are a lot of programmers complaining about usage of white-spaces as keywords and forcing indentation in Python, there are a lot of programmers who prefer curly braces over indenting, that&amp;rsquo;s it, for no reason, it&amp;rsquo;s just their taste, but, why did Brackets was created?
 It was 2014, when I heard a friend complaining about Python and criticizing, saying he will never use Python because of indenting, so I did a really small Python codec to allow people use curly braces in their code, I published this module on PyPI and put a DO NOT USE IT line in the readme.</description>
-    </item>
-    
-    <item>
-      <title>Python Brackets Jupyter Kernel</title>
-      <link>https://python-brackets.org/blog/python-brackets-jupyter-kernel/</link>
-      <pubDate>Sat, 15 Jul 2017 16:48:18 +0430</pubDate>
-      
-      <guid>https://python-brackets.org/blog/python-brackets-jupyter-kernel/</guid>
-      <description>Today we published a Jupyter kernel to add Brackets support to Jupyter, so from now on you can use Jupyter&amp;rsquo;s qtconsole and Jupyter&amp;rsquo;s notebooks with Python Brackets.
-To install you can do
-pip install ibpykernel  and after install is finished
-python -m ibpykernel install --user  and to use it with notebook
-jupyter notebook  and it&amp;rsquo;s available in create file menu
-You can view this project on PyPI or on Github.</description>
     </item>
     
   </channel>

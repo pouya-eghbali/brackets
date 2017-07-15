@@ -14,23 +14,23 @@
 <meta property="og:site_name" content="Python Brackets" />
 <meta property="og:locale" content="nn_NO" />
 <meta property="og:type" content="article" />
-<meta property="og:url" content="https://python-brackets.org/tags/brackets/" />
-<meta property="og:title" content="Brackets" />
-<meta property="twitter:title" content="Brackets">
+<meta property="og:url" content="https://python-brackets.org/blog/why-brackets-was-created/" />
+<meta property="og:title" content="Why Brackets Was Created" />
+<meta property="twitter:title" content="Why Brackets Was Created">
 
     <meta property="og:image" content="https://python-brackets.org/img/banner.png">
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:image" content="https://python-brackets.org/img/banner.png">
 
-<meta property="og:description" content="">
-<meta property="twitter:description" content="">
+<meta property="og:description" content="Why Brackets Was Created">
+<meta property="twitter:description" content="Why Brackets Was Created">
 <title>
 
 
-     Python Brackets - Brackets 
+     Python Brackets - Why Brackets Was Created 
 
 </title>
-<link rel="canonical" href="https://python-brackets.org/tags/brackets/">
+<link rel="canonical" href="https://python-brackets.org/blog/why-brackets-was-created/">
 
 <script src="https://python-brackets.org/js/slider/jquery-3.1.1.min.js"></script>
 
@@ -937,8 +937,6 @@ margin-left: -4%;
 
 
 
-  <link href="https://python-brackets.org/tags/brackets/index.xml" rel="alternate" type="application/rss+xml" title="Python Brackets" />
-
 
 </head>
 
@@ -946,7 +944,7 @@ margin-left: -4%;
 <body>
 
 
-<section class="header header-home">
+<section class="header">
 
     <div class="container">
         <a href="https://python-brackets.org/"><img class="logo" src="https://python-brackets.org/img/logo.png" alt="logo" /></a>
@@ -971,30 +969,141 @@ margin-left: -4%;
     </div>
 </section>
 
-<section class="main">
+
+<section class="main post non-narrow zero-top-spacing">
     <div class="container">
         <div class="content">
-            <div class="posts">
-                <div class="page-heading">Posts about Brackets</div>
-                <ul>
-                    
-                        <li class="post-item">
-    <span class="meta">Jul 15, 2017</span>
-    <a href="https://python-brackets.org/blog/why-brackets-was-created/"><span>Why Brackets Was Created</span></a>
-</li>
+            <div class="front-matter">
+                <div class="title-container">
+                    <div class="page-heading">
 
-                    
-                        <li class="post-item">
-    <span class="meta">Jul 15, 2017</span>
-    <a href="https://python-brackets.org/blog/python-brackets-jupyter-kernel/"><span>Python Brackets Jupyter Kernel</span></a>
-</li>
+    Why Brackets Was Created
 
+</div>
+
+                </div>
+                <div class="meta">
+                    <div class="date" title="Sat Jul 15 2017 18:46:40 IRDT">Jul 15, 2017</div>
                     
-                </ul>
+                        
+                        <div class="author" title="Pouya Eghbali"><div class="middot"></div>Pouya Eghbali</div>
+                        
+                    
+                    <div class="reading-time"><div class="middot"></div>3 minute read</div>
+                    <div class="tags">
+                        <ul>
+                          
+                            <div class="middot"></div>
+                            <li><a href="https://python-brackets.org/tags/brackets">brackets</a> </li>
+                          
+                            <div class="middot"></div>
+                            <li><a href="https://python-brackets.org/tags/history">history</a> </li>
+                          
+                        </ul>
+                    </div>
+                    <div class="tags">
+                        <ul>
+                          
+                          
+                        </ul>
+                    </div>
+                </div>
             </div>
+            <div class="markdown">
+                
+    
+    <p>There are a lot of programmers complaining about usage of white-spaces as
+keywords and forcing indentation in Python, there are a lot of programmers who
+prefer curly braces over indenting, that&rsquo;s it, for no reason, it&rsquo;s just their
+taste, but, why did Brackets was created?</p>
+
+<p>It was 2014, when I heard a friend complaining about Python and criticizing,
+saying he will never use Python because of indenting, so I did a really small
+Python codec to allow people use curly braces in their code, I published this
+module on PyPI and put a DO NOT USE IT line in the readme. I considered it a
+stupid idea, I preferred indenting over curly braces for various reasons.</p>
+
+<p>So, why again, in 2017, I started working on this? People close to me know that
+it&rsquo;s been years that I&rsquo;m working on nlp software, and I was translating human
+language to code (What a stupid idea, right? Oh well, not really), anyways,
+back when I started that nlp software, I was working alone, and it was just at
+early research stages, I tried a lot of programming languages, and a lot of
+algorithms for this.</p>
+
+<p>When working alone, I didn&rsquo;t care much about the syntax of the language, I loved
+Lisp, I loved Python and I used Hy in my project. But, starting to work with
+people, I figured Lisp wasn&rsquo;t a good choice. It was confusing for people, Lisp
+is a great language, minimalistic at its syntax, highly suitable for what I
+wanted to do, but some people aren&rsquo;t easy with it and I understand them.</p>
+
+<p>I needed a language, functional, like Lisp, with ability to treat code as data,
+and data as code, a language where blocks of code were well defined and could be
+inserted at any place without any problems, like how it is possible to insert a
+lisp block into another one, I needed a language where I could define anonymous
+functions, powerful ones, like JavaScript, not like Python&rsquo;s lambdas, I needed
+a sane language, where I could extend classes, instead of sub-classing just to
+add a method to the class, and I needed all of the awesomeness of Python and
+available modules and libraries.</p>
+
+<p>Python, wasn&rsquo;t suitable for this task, just because it used indenting instead of
+curly braces, so, that reminded me of my 2014 project, I forked the project and
+started working on it, to make it suitable for this project. Purpose of this
+project is to provide a functional Python, with curly braces, and easier syntax
+for doing day to day tasks (that&rsquo;s why I added regex literals).</p>
+
+<p>We&rsquo;re now using Brackets to develop our nlp software and we&rsquo;re satisfied with
+it, and we&rsquo;re working to make Brackets better everyday. It is true that with
+extending classes we&rsquo;re just sub-classing the parent again, and our powerful
+anonymous functions aren&rsquo;t anonymous for real, but this works, and we&rsquo;re going
+to solve all these problems in future.</p>
+
+<p>Here&rsquo;s a piece of code from our nlp software:</p>
+
+<pre><code>_.each(charmap, def(la, fa, charmap, i){
+    class transform_char() extends Transform(&quot;.*?%s.*?|%s&quot;%(fa,fa)) {
+        def process(self, cell){
+            word = re.sub(fa, la, cell.text)
+            return [Cell(word, {'word': word})]
+        }
+    }
+    bridge.add_transform(transform_char())
+})
+</code></pre>
+
+<p>And to include code blocks inside another code block we just had to do:</p>
+
+<pre><code>(def {
+    return {0}?() + {1}?()
+}).format(2, (def {
+    return {0}?() ** 2
+}).format(3))()
+</code></pre>
+
+
+                <br>
+            </div>
+            
+            
+                <div class="navigation">
+                    
+                    <div>
+                        <img class="icon" src="https://python-brackets.org/img/back.svg" alt="back" />
+                        <a href="https://python-brackets.org/blog/python-brackets-jupyter-kernel/">Python Brackets Jupyter Kernel</a>
+                    </div>
+                    
+                    <div style="width: 100%;"></div>
+                    
+                </div>
+            
+            <br>
+            <div class="disqus">
+                
+            </div>
+            
         </div>
     </div>
 </section>
+
 <section class="footer">
     <div class="container">
 
