@@ -177,12 +177,11 @@ def translate(a):
     while match:
         start, end = match.span()
         new_class_name = match.group(1)
-        new_class_args = '(self, ' + match.group(2)[1:-1] + ')'
         parent_class_name = match.group(3)
         parent_class_args = match.group(4)
         body = match.group(5)[1:-1]
         code = 'class {0}({1}){{\n    def __init__{2}{{\n        super().__init__{3};\n    try{{self.extend{2}}}except{{pass}}\n    }}\n    {4}}}'
-        code = code.format(new_class_name, parent_class_name, new_class_args, parent_class_args, body)
+        code = code.format(new_class_name, parent_class_name, parent_class_args, parent_class_args, body)
         a = a[:start] + code + a[end:]
         match = cls_extend_matcher.search(a)
 
