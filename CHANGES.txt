@@ -1,3 +1,8 @@
+v0.5.7 July 18 2017
+-- Fixed a problem with regex
+-- Fixed a problem with extend
+-- Fixed a problem with strings
+
 v0.5.6 July 18 2017
 -- Fixed a problem with extend syntax
 
