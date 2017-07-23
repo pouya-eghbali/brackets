@@ -305,15 +305,6 @@ def translate(a):
         a = a[:start] + code + a[end:]
         match = class_np_matcher.search(a)
 
-    # find and pew pew defs:
-
-    match = def_matcher.search(a)
-    while match:
-        start, end = match.span()
-        code = 'def ' + match.group('name') + match.group('paren') + ':' + match.group('bracket')[1:-1]
-        a = a[:start] + code + a[end:]
-        match = def_matcher.search(a)
-
     # find and pew pew templates:
 
     match = template_matcher.search(a)
@@ -349,9 +340,33 @@ def translate(a):
     while match:
         start, end = match.span()
         name = 'lambda_%030x' % randrange(16**50)
-        code = 'def ' + name + match.group('paren') + ':' + match.group('bracket')[1:-1]
-        a = code.rstrip()+'\n' + a[:start] + name + a[end:]
+        code = 'def ' + name + match.group('paren') + match.group('bracket')
+        a    = a[:start] + name + a[end:]
+
+        try:
+            indef = list(filter(lambda m: name in m.group(0), re.finditer(r'def\s*([^(\s]+?)?(?<paren>\((?:[^()]++|(?&paren))*\))?\s*(?<bracket>{(?:[^{}]++|(?&bracket))*})', a, re.DOTALL)))
+        except:
+            indef = []
+
+        if indef:
+            start, end = indef[0].span()
+            start += a[start:].find('{') + 1
+            indents = re.search(r'\s+', a[start:])
+            indents = indents.group(0).split('\n')[-1]
+            a = a[:start] + '\n' + indents + code + '\n' + a [start:]
+        else:
+            a = code + '\n' + a
+        
         match = lambda_matcher.search(a)
+
+    # find and pew pew defs:
+
+    match = def_matcher.search(a)
+    while match:
+        start, end = match.span()
+        code = 'def ' + match.group('name') + match.group('paren') + ':' + match.group('bracket')[1:-1]
+        a = a[:start] + code + a[end:]
+        match = def_matcher.search(a)
 
     # find and pew pew conditional functions
 

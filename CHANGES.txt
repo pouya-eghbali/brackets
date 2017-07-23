@@ -1,3 +1,6 @@
+v0.5.9 July 24 2017
+-- Fixed a problem with local variables and lambdas
+
 v0.5.8 July 23 2017
 -- Fixed a problem with dictionaries
 
