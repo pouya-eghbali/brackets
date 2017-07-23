@@ -94,7 +94,7 @@ def run_command(command):
     sys.exit(Console().runcode(brackets.translate(command)))
 
 def run_file(file):
-    brackets.importer.BracketsLoader('<file>', file).load_module('<file>')
+    brackets.importer.BracketsLoader('__brackets_main__', file).load_module('__brackets_main__')
 
 def main():
     sys.exit(shell("brackets", sys.argv))

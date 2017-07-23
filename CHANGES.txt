@@ -1,3 +1,6 @@
+v0.5.10 July 24 2017
+-- Added __brackets_main__
+
 v0.5.9 July 24 2017
 -- Fixed a problem with local variables and lambdas
 
