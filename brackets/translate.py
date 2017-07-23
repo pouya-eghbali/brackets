@@ -379,8 +379,8 @@ def translate(a):
 
     # fix dictionaries?
 
-    a = re.sub(r'\n}', '}', a)
-    a = re.sub(r'\n{\n', '{', a)
+    a = re.sub(r'\s+}', '}', a)
+    a = re.sub(r'\s+{\s*', ' {', a)
 
     # import runtime thingies?
 
