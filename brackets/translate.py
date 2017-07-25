@@ -182,7 +182,7 @@ def translate(a):
         parent_class_name = match.group(3)
         parent_class_args = match.group(4)
         body = match.group(5)[1:-1]
-        code = 'class {0}({1}){{\n    def __init__{2}{{\n        super().__init__{3};\n    try{{self.extend{5}}}except{{pass}}\n    }}\n    {4}}}'
+        code = 'class {0}({1}){{\n    def __init__{2}{{\n        super().__init__{3};\n    if(hasattr(self, "extend")){{self.extend{5}}}\n    }}\n    {4}}}'
         code = code.format(new_class_name, parent_class_name, new_class_args, parent_class_args, body, ex_class_args)
         a = a[:start] + code + a[end:]
         match = cls_extend_matcher.search(a)
@@ -356,7 +356,7 @@ def translate(a):
             a = a[:start] + '\n' + indents + code + '\n' + a [start:]
         else:
             a = code + '\n' + a
-        
+
         match = lambda_matcher.search(a)
 
     # find and pew pew defs:
