@@ -1,4 +1,5 @@
 import builtins as __builtins__
+from brackets.translate import translate
 
 def eval(code, *args, **kwargs):
     code, debug, original = translate(code)

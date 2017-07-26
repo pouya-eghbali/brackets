@@ -35,7 +35,7 @@ def translate(a, reformat = False):
     else_matcher         = create_np_matcher('else')
     with_matcher         = create_matcher('with')
     string_matcher       = lambda x: re.search('[urf]?('+'""".*?"""'+"|'''.*?'''"+'|".*?"'+"|'.*?')",x,re.DOTALL)
-    comment_matcher      = lambda x: re.search(r"//.*?\n|/\*.*?(\*/)|#.*?\n",x,re.DOTALL)
+    comment_matcher      = r"//.*?\n|/\*.*?(\*/)|#.*?\n"
     bracket_matcher      = re.compile(r'(?<bracket>{(?:[^{}]++|(?&bracket))*})', flags=re.VERBOSE)
     literal_matcher      = lambda x: re.search(r"`.*?`",x,re.DOTALL)
     conditional_matcher  = re.compile(r'((([^(){}:;=~\s,\[\]]+|(\((?>[^()]+|(?4))*\)))+(?4)*)(\.(?3))*)\?((?4))', flags=re.VERBOSE)
@@ -44,6 +44,10 @@ def translate(a, reformat = False):
     re_match_matcher     = re.compile(r'((([^(){}:;=~\s,\[\]]+|(\((?>[^()]+|(?4))*\)))+(?4)*)(\.(?3))*)\s*=~\s*((?1))', flags=re.VERBOSE)
     re_sub_matcher       = re.compile(r'((([^(){}:;=~\s,\[\]]+|(\((?>[^()]+|(?4))*\)))+(?4)*)(\.(?3))*)\s*~=\s*((?1))', flags=re.VERBOSE)
     cls_extend_matcher   = re.compile(r'class\s+([a-zA-Z_0-9]+)\s*(?<args>\((?:[^()]++|(?&args))*\))\s+extends\s+([a-zA-Z_0-9]+)\s*((?&args))\s*(?<bracket>{(?:[^{}]++|(?&bracket))*})', flags=re.VERBOSE)
+
+    # well, i'll just remove the comments:
+
+    a = re.sub(comment_matcher, '', a, flags=re.DOTALL)
 
     # replace all escapes oh well:
 
@@ -75,12 +79,6 @@ def translate(a, reformat = False):
     # not allowing indent and {} to be mixed:
 
     a = re.sub('\n[\t ]+', '\n', a)
-
-    # well, i'll just remove the comments:
-
-    while (comment_matcher(a)):
-        start, end =  (comment_matcher(a)).span()
-        a = a[:start] + a[end:]
 
     # pew pew some cools stuff
 
