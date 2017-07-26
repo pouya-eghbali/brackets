@@ -3,9 +3,10 @@ from encodings import utf_8
 import regex as re
 from random import randrange
 from yapf.yapflib.yapf_api import FormatCode
+from brackets.exceptions import exception_handler
 import sys
 
-def translate(a):
+def translate(a, reformat = False):
 
     o = a[:] # a copy of the original content just for fun
 
@@ -410,11 +411,6 @@ def translate(a):
     if regexrtm:
         a = 'import regex as re\n' + a
 
-    # remove all debug code
-
-    f = a[:].split('\n')
-    a = re.sub(r'debug\((\d+),(\d+)\) *', r'', a)
-
     # put back the strings?
 
     for string in replaced_strings:
@@ -426,31 +422,26 @@ def translate(a):
           .replace(unique_grave_slash_replacer,'`')
           .replace(unique_double_slash_replacer,'\\"'))
 
+    # remove all debug code
+
+    f = a[:].split('\n')
+    a = re.sub(r'debug\((\d+),(\d+)\) *', r'', a)
+
     # reformat code?
     try:
-        a = FormatCode(a)[0]
+        if reformat:
+            a = FormatCode(a)[0]
     except SyntaxError as e:
-        line = f[e.lineno-1]
-        pos  = re.search(r'debug\((\d+),(\d+)\)', line)
-        if not pos:
-            raise
-        pos = int(pos.group(1))
-        message = 'invalid syntax\n\nError in:\n\n'
-        start = pos-100
-        if start < 0:
-            start = 0
-        message += ('...' + o[start: pos+100] + '...\n\n\n')
-        message += 'Error happened at position ' + str(pos)
-        raise SyntaxError(message)
+        exception_handler(e, f, o)
 
-    return a
+    return a, f, o
 
 def search_function(s):
     if s!='brackets': return None
     utf8=encodings.search_function('utf8') # Assume utf8 encoding
     def decode(memory):
         k = utf8.decode(memory)
-        data = translate(k[0])
+        data, debug, original = translate(k[0])
         return (data, len(data))
     return codecs.CodecInfo(
         name='brackets',

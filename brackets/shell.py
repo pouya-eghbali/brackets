@@ -3,7 +3,8 @@ import brackets
 import sys
 import argparse
 import brackets.importer
-from brackets import eval, exec, compile
+from brackets.helpers import eval, exec, compile
+from brackets import exception_handler
 
 USAGE = "%(prog)s [-h | -c cmd | file | -] [arg] ..."
 VERSION = "%(prog)s " + brackets.__version__
@@ -23,7 +24,7 @@ class Console(code.InteractiveConsole):
 
     def runsource(self, source, filename="<input>", symbol="single"):
         try:
-            code = brackets.translate(source)
+            code, debug, original = brackets.translate(source)
         except:
             if source.endswith('\n'):
                 # Case 1
@@ -91,7 +92,11 @@ def run_repl(spy):
     sys.exit(Console(spy).interact(banner=BANNER))
 
 def run_command(command):
-    sys.exit(Console().runcode(brackets.translate(command)))
+    code, debug, original = brackets.translate(command)
+    try:
+        sys.exit(Console().runcode(code))
+    except Exception as e:
+        exception_handler(e, debug, original)
 
 def run_file(file):
     brackets.importer.BracketsLoader('__brackets_main__', file).load_module('__brackets_main__')

@@ -1,5 +1,6 @@
 import sys
 import regex as re
+from brackets.helpers import eval
 
 class BracketsTemplateCreator(object):
     """

@@ -1,3 +1,7 @@
+v0.6.0 July 26 2017
+-- Better exceptions and debugging
+-- Added map files
+
 v0.5.11 July 25 2017
 -- Fix try/catch issue in class extends
 
