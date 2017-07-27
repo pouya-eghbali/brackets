@@ -178,6 +178,7 @@ def translate(a, reformat = False):
         new_class_name = match.group(1)
         new_class_args = '(self, ' + match.group(2)[1:-1] + ')'
         ex_class_args  = match.group(2)
+        ex_class_args  = re.sub(r'(\s*=\s*((?<b1>{(?:[^{}]++|(?&b1))*})|(?<b2>\((?:[^()]++|(?&b2))*\))|(?<b3>\[(?:[^\[\]]++|(?&b3))*\])|[^,)]*))\s*([,)])', r'\6', ex_class_args, re.DOTALL)
         parent_class_name = match.group(3)
         parent_class_args = match.group(4)
         body = match.group(5)[1:-1]
