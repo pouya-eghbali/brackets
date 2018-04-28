@@ -3,6 +3,10 @@
 
 ![](https://github.com/pooya-eghbali/brackets/raw/master/logo.png "Python Brackets")
 
+# DeaD
+
+This project is dead and unsupported, I wish I had more time to work on this, but sadly I don't, at least not now.
+
 Brackets is a yet-another, a not just a pre-processor, a language built on top of Python, allowing to use {} instead of indentation in Python, and it allows defining powerful anonymous functions and introduces much more sugar and candy into Python's syntax and abilities.
 
 Visit [Brackets Website](http://python-brackets.org) for examples and more info or
